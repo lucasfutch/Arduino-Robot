@@ -102,7 +102,7 @@ void setup()
 //  delay(10);
 
 }
-}
+
 
 void setSpeed(){
     analogWrite(ENB,Left_Speed_Hold);
@@ -132,57 +132,57 @@ void loop() {
       Serial.print (endOfNumberDelimiter);  
       Serial.println ();
 
-//      if (Serial.available() > 0) {
-//
-//        char inChar = Serial.read();
-//        Serial.write(inChar);
-//
-//        if(inChar == 'w') {
-//         
-//          Left_Speed_Hold = 200;
-//          Right_Speed_Hold = 200;
-//          setSpeed();
-//          MOTOR_GO_FORWARD;
-//          delay(500);
-//          MOTOR_GO_STOP;
-//        }
-//
-//        else if(inChar == 'a') {
-//          Left_Speed_Hold = 100;
-//          Right_Speed_Hold = 200;
-//          setSpeed();
-//          MOTOR_GO_LEFT;
-//          delay(500);
-//          MOTOR_GO_STOP;
-//        }
-//
-//        else if(inChar == 's') {
-//          Left_Speed_Hold = 200;
-//          Right_Speed_Hold = 200;
-//          setSpeed();
-//          MOTOR_GO_BACK;
-//          delay(500);
-//          MOTOR_GO_STOP;
-//        }
-//
-//        else if(inChar == 'd') {
-//          Left_Speed_Hold = 200;
-//          Right_Speed_Hold = 100;
-//          setSpeed();
-//          MOTOR_GO_RIGHT;
-//          delay(500);
-//          MOTOR_GO_STOP;
-//
-//        }
-//
-//        else {
-//          delay(500);
-//          MOTOR_GO_STOP;
-//        }
-//
-//        delay(10);
-//        
-//      }      
+      if (Serial.available() > 0) {
+
+        char inChar = Serial.read();
+        Serial.write(inChar);
+
+        if(inChar == 'w') {
+         
+          Left_Speed_Hold = 200;
+          Right_Speed_Hold = 200;
+          setSpeed();
+          MOTOR_GO_FORWARD;
+          delay(500);
+          MOTOR_GO_STOP;
+        }
+
+        else if(inChar == 'a') {
+          Left_Speed_Hold = 100;
+          Right_Speed_Hold = 200;
+          setSpeed();
+          MOTOR_GO_LEFT;
+          delay(500);
+          MOTOR_GO_STOP;
+        }
+
+        else if(inChar == 's') {
+          Left_Speed_Hold = 200;
+          Right_Speed_Hold = 200;
+          setSpeed();
+          MOTOR_GO_BACK;
+          delay(500);
+          MOTOR_GO_STOP;
+        }
+
+        else if(inChar == 'd') {
+          Left_Speed_Hold = 200;
+          Right_Speed_Hold = 100;
+          setSpeed();
+          MOTOR_GO_RIGHT;
+          delay(500);
+          MOTOR_GO_STOP;
+
+        }
+
+        else {
+          delay(500);
+          MOTOR_GO_STOP;
+        }
+
+        delay(10);
+        
+      }      
       
     }  
     
