@@ -7,16 +7,16 @@ from navigator import Navigator
 
 if __name__ == "__main__":
 
-    time_step = 0.1
-    kp = (253.0/360.0)*2.0*0.45
-    ki = 1.7/1.2
+    time_step = 0.005
+    kp = (253.0/360.0)*2
+    ki = 0
 
     tracker = Tracker()
-    matlab_port = MatlabPort()
+    #matlab_port = MatlabPort()
     navigator = Navigator()
     controller = Controller(kp, ki, time_step)
 
-    target_heading = 180
+    target_heading = 0
     my_pos = [0, 0]
     target_pos = [0, 0]
 
@@ -38,13 +38,13 @@ if __name__ == "__main__":
                 print current_heading
 
                 if (my_pos and target_pos):
-                    #target_heading = navigator.get_target_heading(my_pos, target_pos)
+                    target_heading = navigator.get_target_heading(my_pos, target_pos)
                     pass
 
                 if (current_heading):
                     # there is new data (fiducial is in view)
                     port_info = int(current_heading*(255.0/360.0))
-                    matlab_port.send_byte(port_info)
+                    #matlab_port.send_byte(port_info)
 
                     controller.update_motors(current_heading, target_heading)
 
@@ -54,5 +54,5 @@ if __name__ == "__main__":
 
         except (KeyboardInterrupt, SystemExit):
             controller.stop()
-            matlab_port.close()
+            #matlab_port.close()
             break

@@ -20,6 +20,7 @@ class Controller(object):
 
         # calculate error
         self.get_error()
+        print "error: ", self.error
 
         # calculate motor inputs
         self.get_motor_input()
@@ -30,15 +31,18 @@ class Controller(object):
     def get_error(self):
 
         self.error = (self.target_heading - self.current_heading)
+        print "target: ", self.target_heading, "current: ",  self.current_heading
 
-        if (abs(self.error) >= 180):
-            self.error = (360 + self.target_heading - self.current_heading)
+        if ((self.error) > 180):
+            self.error = -1.0*(360 + self.current_heading - self.target_heading )
+        if( (self.error) < -180):
+            self.error = (360 + self.target_heading - self.current_heading )
 
         return self.error
 
     def get_motor_input(self):
         # update error
-        self.get_error(self.current_heading, self.target_heading)
+        self.get_error()
 
         # update integrator term
         self.update_integrator()
@@ -63,7 +67,7 @@ class Controller(object):
             self.xBee.send_command(2)
 
         # send motor speed
-        self.xBee.send_command(abs(motor_input))
+        self.xBee.send_command(abs(self.motor_input))
 
     def coast(self):
         self.motor_input -= 20

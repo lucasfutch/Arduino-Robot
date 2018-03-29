@@ -18,6 +18,9 @@ while(1)
     
     end
     
+    
+    
+    
     plot(data(1:count-1,1), data(1:count-1,2));
     pause(0.00000001);
 end
