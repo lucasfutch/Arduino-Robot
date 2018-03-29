@@ -1,13 +1,13 @@
 from xbee import XBee
 
 class Controller(object):
-    def __init__(self, dt):
+    def __init__(self, dt, forward_speed, pivot_threshold):
         self.current_heading = None
         self.target_heading = None
         self.error = None
         self.integrator = 0
         self.max = 50
-        self.forward_throttle_avg = 100
+        self.forward_throttle_avg = forward_speed
         self.kp = (253.0/360.0)*5
         self.ki = 0
         self.dt = dt
@@ -15,6 +15,7 @@ class Controller(object):
         self.motor_input_pivot = 0
         self.motor_input_right = 0
         self.motor_input_left  = 0
+        self.pivot_threshold = pivot_threshold
 
 
     def update_motors(self, current_heading, target_heading):
@@ -24,9 +25,8 @@ class Controller(object):
 
         # calculate error
         self.get_error()
-        print "error: ", self.error
 
-        if (abs(self.error) > 30):
+        if (abs(self.error) > self.pivot_threshold):
             # calculate pivit motor inputs
             self.get_motor_input_pivot()
 
@@ -43,14 +43,13 @@ class Controller(object):
     def get_error(self):
 
         self.error = (self.target_heading - self.current_heading)
-        print "target: ", self.target_heading, "current: ",  self.current_heading
 
         if ((self.error) > 180):
             self.error = -1.0*(360 + self.current_heading - self.target_heading )
         if( (self.error) < -180):
             self.error = (360 + self.target_heading - self.current_heading )
 
-        return self.error
+        print self.error
 
     def get_motor_input_pivot(self):
         # update integrator term
@@ -68,13 +67,13 @@ class Controller(object):
     def get_motor_input_forward(self):
         # veer left
         if (self.error > 0):
-            self.motor_input_right = self.forward_throttle_avg + abs(self.error)
-            self.motor_input_left = self.forward_throttle_avg - abs(self.error)
+            self.motor_input_right = self.forward_throttle_avg + abs(self.error)*1.5
+            self.motor_input_left = self.forward_throttle_avg - abs(self.error)*1.5
 
         # veer right
         elif (self.error < 0):
-            self.motor_input_right = self.forward_throttle_avg - abs(self.error)
-            self.motor_input_left = self.forward_throttle_avg + abs(self.error)
+            self.motor_input_right = self.forward_throttle_avg - abs(self.error)*1.5
+            self.motor_input_left = self.forward_throttle_avg + abs(self.error)*1.5
 
         # stay the course
         else:
@@ -115,10 +114,29 @@ class Controller(object):
         self.xBee.send_command(5)
 
     def coast(self):
-        self.motor_input_pivot -= 20
-        if (self.motor_input_pivot < 3):
-            self.motor_input_pivot = 3;
-        self.xBee.send_command(abs(self.motor_input_pivot))
+        if (self.error > self.pivot_threshold):
+            self.motor_input_pivot -= 5
+            if (self.motor_input_pivot < 6):
+                self.motor_input_pivot = 0;
+            self.command_motors_pivot()
+        else:
+            self.motor_input_right -= 10
+            self.motor_input_left -= 10
+            # make sure inputs are negative
+            if (self.motor_input_right < 0):
+                self.motor_input_right = 0
+            if (self.motor_input_left < 0):
+                self.motor_input_left = 0
+            self.command_motors_forward()
 
     def stop(self):
         self.xBee.send_command(0)
+
+    def close(self):
+        self.xBee.close()
+
+    def update_pivot_threshold(self, new_pivot_threshold):
+        self.pivot_threshold = new_pivot_threshold
+
+    def update_throttle(self, new_throttle):
+        self.forward_throttle_avg = new_throttle

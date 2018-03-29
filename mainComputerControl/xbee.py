@@ -20,8 +20,10 @@ class XBee(object):
     def send_command(self, strOut):
         # Send the data
 
-        if (strOut in range(256)):
+        if (int(strOut) in range(256)):
             self.xbee_port.write(chr(int(strOut)))
         else:
-            self.xbee_port.write(chr(int(strOut)))
             print "Trying to write the impossible!: ", strOut
+
+    def close(self):
+        self.xbee_port.close()
