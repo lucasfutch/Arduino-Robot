@@ -17,7 +17,7 @@ int Right_Speed_Hold = 0;
 
 bool dataStart, dataEnd;
 int dataCount = 0;
-bool movingLeft, movingRight, movignForward;
+bool movingLeft, movingRight, movingForward;
 
 #define MOTOR_GO_FORWARD  { digitalWrite(INPUT1,LOW);digitalWrite(INPUT2,HIGH);digitalWrite(INPUT3,LOW);digitalWrite(INPUT4,HIGH);}
 #define MOTOR_GO_BACK    {   digitalWrite(INPUT1,HIGH);digitalWrite(INPUT2,LOW);digitalWrite(INPUT3,HIGH);digitalWrite(INPUT4,LOW);}    //车体前进
@@ -53,61 +53,65 @@ void loop() {
 
         char inChar = Serial.read();
 
+
+        if ((int)inChar == 0) {
+            MOTOR_GO_STOP
+        }
         // turn right
-        if ((int)inChar == 1){
+        else if ((int)inChar == 1){
             movingRight = true;
         
-            MOTOR_GO_RIGHT
         }
 
         // turn left
         else if ((int)inChar == 2){
             movingLeft = true;
-            MOTOR_GO_LEFT
         }
   
         // move forward
-        else if ((int(inChar == 3) {
+        else if ((int)inChar == 3) {
   
             movingForward = true;
           
         }
   
         // start expect two bytes
-        else if ((int(inChar == 4) {
-  
+        else if ((int)inChar == 4) {
+            dataCount = 0;
             dataStart = true;
         }
   
         // end expect two bytes
-        else if ((int(inChar == 5) {
-  
-            dataEnd = true;
+        else if (((int)inChar == 5) && (dataCount == 2)) {
+          setSpeed();
+          MOTOR_GO_BACK
+          movingForward = false;
+          
         }
 
         // set the speed
         else {
           
-            if (movingLeft) {
+            if (movingLeft ) {
                 int turnSpeed = (int)inChar;
                 Left_Speed_Hold = turnSpeed;
-                Right_Speed_Hold = 0;
+                Right_Speed_Hold = turnSpeed;
                 movingLeft = false;
-                setSpeed()
+                setSpeed();
+                MOTOR_GO_LEFT
             }
             else if (movingRight) {
                 int turnSpeed = (int)inChar;
                 Left_Speed_Hold = turnSpeed;
-                Right_Speed_Hold = 0;
+                Right_Speed_Hold = turnSpeed;
                 movingRight = false;
-                setSpeed()
+                setSpeed();
+                MOTOR_GO_RIGHT
             }
 
             // expecting two bytes to set forward speed
             else if (movingForward && dataStart) {
                 int turnSpeed = (int)inChar;
-                dataCount = 0;
-    
                 dataCount += 1;
 
                 // first byte in
@@ -119,17 +123,9 @@ void loop() {
                 // change dataStart to know it has received both
                 else if (dataCount == 2) {
                     Right_Speed_Hold = turnSpeed;
-                    dataCount = 0;
                     dataStart = false;
                     
                 }
-            }
-
-            // two triggers: dataEnd received and dataStart flipped when second byte received
-            else if (movingForward && dataEnd && !dataStart) {
-                setSpeed();
-                movingForward = false;
-                dataEnd = false;
             }
 
             // somethign went wrong -> reset everything and wait for new command
