@@ -8,13 +8,11 @@ from navigator import Navigator
 if __name__ == "__main__":
 
     time_step = 0.005
-    kp = (253.0/360.0)*2
-    ki = 0
 
     tracker = Tracker()
     #matlab_port = MatlabPort()
     navigator = Navigator()
-    controller = Controller(kp, ki, time_step)
+    controller = Controller(time_step)
 
     target_heading = 0
     my_pos = [0, 0]
