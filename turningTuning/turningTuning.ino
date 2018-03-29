@@ -61,6 +61,7 @@ float atm;
 float altitude;
 BMP180 Barometer;
 unsigned long timerTime;
+unsigned long motorTime;
 
 
 int ENA = 5;
@@ -70,8 +71,8 @@ int INPUT1 = 8;
 int INPUT3 = 12;
 int INPUT4 = 13;
 
-int Left_Speed_Hold;
-int Right_Speed_Hold;
+int Left_Speed_Hold = 0;
+int Right_Speed_Hold = 0;
 
 #define MOTOR_GO_FORWARD  { digitalWrite(INPUT1,LOW);digitalWrite(INPUT2,HIGH);digitalWrite(INPUT3,LOW);digitalWrite(INPUT4,HIGH);}
 #define MOTOR_GO_BACK    {   digitalWrite(INPUT1,HIGH);digitalWrite(INPUT2,LOW);digitalWrite(INPUT3,HIGH);digitalWrite(INPUT4,LOW);}    //车体前进
@@ -79,9 +80,6 @@ int Right_Speed_Hold;
 #define MOTOR_GO_LEFT   {digitalWrite(INPUT1,LOW);digitalWrite(INPUT2,HIGH);digitalWrite(INPUT3,HIGH);digitalWrite(INPUT4,LOW);}    //车体前进
 #define MOTOR_GO_STOP   {digitalWrite(INPUT1,LOW);digitalWrite(INPUT2,LOW);digitalWrite(INPUT3,LOW);digitalWrite(INPUT4,LOW);}    //车体前进
 
-const char startOfNumberDelimiter = '<';
-const char endOfNumberDelimiter   = '>';
-unsigned long timerTime;
 
 void setup()
 {
@@ -107,6 +105,21 @@ void setup()
 
     //  Mxyz_init_calibrated ();
 
+    MOTOR_GO_RIGHT
+
+}
+void sendImuData(){
+  Serial.println(ax);
+  Serial.println(ay);
+  Serial.println(az);
+  
+  Serial.println(gx);
+  Serial.println(gy);
+  Serial.println(gz);
+  
+  Serial.println(mx);
+  Serial.println(my);
+  Serial.println(mz);
 }
 
 
@@ -120,73 +133,33 @@ void loop() {
     getAccel_Data();
     getGyro_Data();
     getCompassDate_calibrated(); // compass data has been calibrated here
-
-    if (timerTime >= 200){
-      timerTime = millis();
-      Serial.println(ax);
-      Serial.println(ay);
-      Serial.println(az);
-      Serial.println(gx);
-      Serial.println(gy);
-      Serial.println(gz);
-      Serial.println(mx);
-      Serial.println(my);
-      Serial.println(mz);
-    }
-
+    
     if (Serial.available() > 0) {
 
       char inChar = Serial.read();
-
-      if(inChar == 'w') {
-
-        Left_Speed_Hold = 200;
-        Right_Speed_Hold = 200;
+            
+      if ((int)inChar == 0){
+        sendImuData();
+      }
+      else if ((int)inChar == 1){
+        // turn right
+        MOTOR_GO_RIGHT
+      }
+      else if ((int)inChar == 2){
+        // turn left
+        MOTOR_GO_LEFT
+      }
+      
+      else{
+        int turnSpeed = (int)inChar;
+        Left_Speed_Hold = turnSpeed;
+        Right_Speed_Hold = turnSpeed;
         setSpeed();
-        MOTOR_GO_FORWARD;
-        delay(500);
-        MOTOR_GO_STOP;
+        motorTime = millis();
       }
-
-      else if(inChar == 'a') {
-        Left_Speed_Hold = 100;
-        Right_Speed_Hold = 200;
-        setSpeed();
-        MOTOR_GO_LEFT;
-        delay(500);
-        MOTOR_GO_STOP;
-      }
-
-      else if(inChar == 's') {
-        Left_Speed_Hold = 200;
-        Right_Speed_Hold = 200;
-        setSpeed();
-        MOTOR_GO_BACK;
-        delay(500);
-        MOTOR_GO_STOP;
-      }
-
-      else if(inChar == 'd') {
-        Left_Speed_Hold = 200;
-        Right_Speed_Hold = 100;
-        setSpeed();
-        MOTOR_GO_RIGHT;
-        delay(500);
-        MOTOR_GO_STOP;
-
-      }
-
-      else {
-        delay(500);
-        MOTOR_GO_STOP;
-      }
-
-      delay(10);
 
     }
-
-
-
+    
   }
 
   
