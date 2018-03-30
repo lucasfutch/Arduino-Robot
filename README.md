@@ -17,7 +17,7 @@ This project uses reacTIVision to track fiducial markers placed on the autonomou
 
 # Architecture
 ## Rover
-The rover consists of an Arduino UNO with an attached motor shield to control two DC motors in order to steer and move the vehicle. In order to communicate with the main computer, the rover has an XBee module configured to operate at 57600 baud. The vehicle is powered by a single 7.4 NiMH battery. The on board Arduino is programmed to receive single byte commands as follows:
+The rover consists of an Arduino UNO with an attached motor shield to control two DC motors in order to steer and move the vehicle. In order to communicate with the main computer, the rover has an XBee module configured to operate at 57600 baud. The vehicle is powered by a single 7.4V NiMH battery. The on board Arduino is programmed to receive single byte commands as follows:
 * 0 : Stop the vehicle
 * 1 : Pivot right
 * 2 : Pivot left
@@ -34,4 +34,4 @@ The main computer controls the rover using a python program. It uses a USB XBee 
 * Navigator: This class handles navigation for the rover. It takes information regarding the state of the system and returns desired headings as well as recognizing when a mission is complete.
 * Controller: This class controls the rover by receiving information about the current state of the system as well as the desired state. Based on the error between these two, it sends commands to rover using an instantiation of the XBee class.
   * XBee: This class handles the serial communication between the main computer and the rover using the XBee module.
-* MatlabPort: This class is optioanally instantiated and ports heading data to a Matlab port. This data can be used for analysis and tuning.
+* MatlabPort: This class is optionally instantiated and ports heading data to a Matlab port. This data can be used for analysis and tuning.
