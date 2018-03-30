@@ -1,5 +1,6 @@
 # Arduino Robot
 
+New York University | Abu Dhabi
 Embedded Systems Final Project
 
 By: Daniel Carelli and Lucas Futch
