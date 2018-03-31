@@ -7,6 +7,15 @@ from navigator import Navigator
 
 if __name__ == "__main__":
 
+    from sys import argv
+    if (argv[1] == '-p' and argv[4] == '-h'):
+        print argv
+        target_pos = [argv[2], argv[3]]
+        final_heading = argv[5]
+    else:
+        target_pos = [0.5, 0.5]
+        final_heading = 0
+
     time_step = 0.0001
 
     tracker = Tracker()
@@ -18,8 +27,6 @@ if __name__ == "__main__":
 
     target_heading = 0
     my_pos = [0, 0]
-    target_pos = [0.2, 0.2]
-    final_heading = 50
 
     motor_input = 3
     timer = time.time()

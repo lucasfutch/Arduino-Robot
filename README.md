@@ -43,4 +43,4 @@ The main computer controls the rover using a python program. It uses a USB XBee 
 
 ### Rover and Fidicual Markers
 
-![Rover](/images/robot_fiducual_1.jpg)
+![Rover](/images/robot_fiducial_1.jpg)
