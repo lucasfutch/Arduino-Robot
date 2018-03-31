@@ -35,3 +35,12 @@ The main computer controls the rover using a python program. It uses a USB XBee 
 * Controller: This class controls the rover by receiving information about the current state of the system as well as the desired state. Based on the error between these two, it sends commands to rover using an instantiation of the XBee class.
   * XBee: This class handles the serial communication between the main computer and the rover using the XBee module.
 * MatlabPort: This class is optionally instantiated and ports heading data to a Matlab port. This data can be used for analysis and tuning.
+
+# Project Images
+### Arena
+
+![Rover Tracking Arena](/images/arena.jpg)
+
+### Rover and Fidicual Markers
+
+![Rover](/images/robot_fiducual_1.jpg)
