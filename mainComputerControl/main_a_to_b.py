@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     from sys import argv
     if (argv[1] == '-p'):
-        target_pos = [argv[2], argv[3]]
+        target_pos = [float(argv[2]), float(argv[3])]
     else:
         target_pos = [0.5, 0.5]
 
@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
     target_heading = 0
     my_pos = [0, 0]
-    
+
 
     motor_input = 3
     timer = time.time()

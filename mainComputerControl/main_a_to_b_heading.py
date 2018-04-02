@@ -10,8 +10,8 @@ if __name__ == "__main__":
     from sys import argv
     if (argv[1] == '-p' and argv[4] == '-h'):
         print argv
-        target_pos = [argv[2], argv[3]]
-        final_heading = argv[5]
+        target_pos = [float(argv[2]), float(argv[3])]
+        final_heading = float(argv[5])
     else:
         target_pos = [0.5, 0.5]
         final_heading = 0
