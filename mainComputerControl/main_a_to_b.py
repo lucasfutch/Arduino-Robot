@@ -8,9 +8,24 @@ from navigator import Navigator
 if __name__ == "__main__":
 
     from sys import argv
-    if (argv[1] == '-p'):
-        target_pos = [float(argv[2]), float(argv[3])]
+    if (len(argv) == 4):
+        if (argv[1] == '-p'):
+            try:
+                x = float(argv[2])
+                y = float(argv[3])
+                if (x > 0 and x < 1 and y > 0 and y < 1):
+                    target_pos = [x, y]
+                else:
+                    # Default
+                    target_pos = [0.5, 0.5]
+            except ValueError:
+                # Default
+                target_pos = [0.5, 0.5]
+        else:
+            # Default
+            target_pos = [0.5, 0.5]
     else:
+        # Default
         target_pos = [0.5, 0.5]
 
     time_step = 0.0001

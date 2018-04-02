@@ -8,11 +8,34 @@ from navigator import Navigator
 if __name__ == "__main__":
 
     from sys import argv
-    if (argv[1] == '-p' and argv[4] == '-h'):
-        print argv
-        target_pos = [float(argv[2]), float(argv[3])]
-        final_heading = float(argv[5])
+    if (len(argv) == 6):
+        if (argv[1] == '-p' and argv[4] == '-h'):
+            try:
+                x = float(argv[2])
+                y = float(argv[3])
+                h = float(argv[5])
+
+                if (x > 0 and x < 1 and y > 0 and y < 1):
+                    target_pos = [x, y]
+                    if (h > 0 and h < 360):
+                        final_heading = h
+                    else:
+                        final_heading = 0
+                else:
+                    # Default
+                    target_pos = [0.5, 0.5]
+                    final_heading = 0
+            except ValueError:
+                # Default
+                target_pos = [0.5, 0.5]
+                final_heading = 0
+
+        else:
+            # Default
+            target_pos = [0.5, 0.5]
+            final_heading = 0
     else:
+        # Default
         target_pos = [0.5, 0.5]
         final_heading = 0
 
