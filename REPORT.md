@@ -1,3 +1,12 @@
+# Embedded Systems Final Project - Report
+Daniel Carelli & Lucas Futch
+
+April 2018
+
+New York University | Abu Dhabi
+
+![Chase 3](/images/rover3.gif)
+
 # Development
 ## Planning
 Our first step was to break down the project into discrete deliverabes. We hopped to plan the project such that each week would drive us closer to the finished product, in a timely manner. We broke down the overall project into smaller tasks and dstributed them across the 5 weeks. The Gant Chart below illustrates our inital plan.
@@ -114,8 +123,6 @@ The last mode is the autonomous mode, where the rover tracks a separate rover/ta
 
 # Action Shots
 
-#### Chasing Videos
-![Chase 1](/images/rover1.gif) ![Chase 2](/images/rover2.gif) ![Chase 3](/images/rover3.gif)
-
+![Chase 1](/images/rover1.gif)
 
 
