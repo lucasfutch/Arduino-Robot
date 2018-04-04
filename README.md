@@ -6,7 +6,7 @@ Embedded Systems Final Project
 
 By: Daniel Carelli and Lucas Futch
 
-[Full Report](https://github.com/lucasfutch/Arduino-Robot/tree/master/report)
+[Full Report](https://github.com/lucasfutch/Arduino-Robot/blob/master/REPORT.md)
 
 # Assignment
 
