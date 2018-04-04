@@ -64,15 +64,15 @@ This class uses reacTIVision as well as the python library pytuio to get the loc
 
 This class handles navigation for the rover. It takes information regarding the state of the system and returns desired headings as well as recognizing when a mission is complete.
 
-#### Controller
+### Controller
 
 This class controls the rover by receiving information about the current state of the system as well as the desired state. Based on the error between these two, it sends commands to rover using an instantiation of the XBee class. It implements a PI controller, although the integrator constant is normaly set to 0 to reduce overshoots. It works by pivoting until the target is within a threshold view (30 deg in chase mode) and then begins moving forward while making minor corrections. 
 
-#### MatLab Port
+### MatLab Port
 
 This class is optionally instantiated and ports heading data to a Matlab port. This data can be used for analysis and tuning.
 
-#### XBee
+### XBee
 
 The XBee is configured to operate in the 2.4 GHz frequency. They have to be preconfigured, where they are given a personal area network ID, a MY address, and a destination address.
 
