@@ -35,4 +35,4 @@ In order to get the position of the rover and its target, a machine vision softw
 
 Solarized dark                       |  Solarized Ocean
 :-----------------------------------:|:-------------------------:
-![](images/reactivision-source.JPG =250x)  |  ![](reactivision.JPG =250x)
+![](images/reactivision-source.JPG | width=100)  |  ![](reactivision.JPG | width=100)
