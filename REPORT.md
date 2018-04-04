@@ -120,9 +120,3 @@ As an example, in mainComputerControl, use `python main_a_to_b.py -p 0.8. 0.4 -h
 #### Chase (main_chase.py)
 
 The last mode is the autonomous mode, where the rover tracks a separate rover/target using a fidicual marker and chases its location. The rover will continously drive towards the marker, until it is at the exact location, at which point tracking will be on hold until the target location changes again.
-
-# Action Shots
-
-![Chase 1](/images/rover1.gif)
-
-
