@@ -33,6 +33,4 @@ Initially, the GY-85 sensor was used. This board is 9 degree of freedom IMU, wit
 ### Machine Vision Tracking System
 In order to get the position of the rover and its target, a machine vision software was used. Initially, the setup and software was to be provided, but we needed access to the setup before it was ready. As a result, we turned to a software previously used: reacTIVsion. This software identifies and tracks fiducial markers, reporting both their xy position (normalized) as well as their orientation. In our setup, we were limited by the over head camera frame-rate at 30 FPS. The machine vision software dumps its data on a TUIO port, where we could read it using pytuio, a Python library.
 
-Solarized dark                       |  Solarized Ocean
-:-----------------------------------:|:-------------------------:
-![](images/reactivision-source.JPG | width=100)  |  ![](reactivision.JPG | width=100)
+![](images/reactivision.png
