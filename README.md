@@ -8,6 +8,8 @@ By: Daniel Carelli and Lucas Futch
 
 [Full Report](https://github.com/lucasfutch/Arduino-Robot/blob/master/REPORT.md)
 
+![Chase 1](/images/rover1.gif)
+
 # Assignment
 
 Build an autonomous rover that can successfully accomplish the following challenges:
