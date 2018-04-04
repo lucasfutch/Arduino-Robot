@@ -6,6 +6,8 @@ Embedded Systems Final Project
 
 By: Daniel Carelli and Lucas Futch
 
+[Full Report](www.google.com)
+
 # Assignment
 
 Build an autonomous rover that can successfully accomplish the following challenges:
@@ -44,3 +46,4 @@ The main computer controls the rover using a python program. It uses a USB XBee 
 ### Rover and Fidicual Markers
 
 ![Rover](/images/robot_fiducial_1.jpg)
+
