@@ -10,11 +10,11 @@ if __name__ == "__main__":
     time_step = 0.0001
 
     tracker = Tracker()
-    #matlab_port = MatlabPort()
+
     pivot_threshold = 30
     forward_speed = 120
-    navigator = Navigator()
-    controller = Controller(time_step, forward_speed, pivot_threshold)
+
+
 
     target_heading = 0
     my_pos = [0, 0]
@@ -28,8 +28,6 @@ if __name__ == "__main__":
         try:
             # update system state
             tracker.update()
-
-            
             current_heading = tracker.get_my_heading()
             my_pos = tracker.get_my_pos()
             target_pos = tracker.get_target_pos()
@@ -37,10 +35,10 @@ if __name__ == "__main__":
             if ((time.time() - timer) > time_step):
             #if (False):
                 timer = time.time()
-                navigator.has_arrived()
+                navigator_pursuer.has_arrived()
 
                 if (my_pos and target_pos):
-                    target_heading = navigator.get_target_heading(my_pos, target_pos)
+                    target_heading = navigator_pursuer.get_target_heading(my_pos, target_pos)
                     pass
 
                     # there is new data (fiducial is in view)

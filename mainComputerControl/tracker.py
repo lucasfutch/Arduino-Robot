@@ -5,23 +5,16 @@ class Tracker(object):
     def __init__(self):
         self.tracking = tuio.Tracking()
         self.tracker = None
-        self.my_id = 0
-        self.target_id = 2
 
     def update(self):
         self.tracking.update()
 
-    def get_my_heading(self):
+    def get_heading(self, fiducial):
         for obj in self.tracking.objects():
-            if (obj.id == self.my_id):
+            if (obj.id == fiducial):
                 return obj.angle
 
-    def get_my_pos(self):
+    def get_pos(self, fiducial):
         for obj in self.tracking.objects():
-            if (obj.id == self.my_id):
-                return [obj.xpos, obj.ypos]
-
-    def get_target_pos(self):
-        for obj in self.tracking.objects():
-            if (obj.id == self.target_id):
+            if (obj.id == fiducial):
                 return [obj.xpos, obj.ypos]
