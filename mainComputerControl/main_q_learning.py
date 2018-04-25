@@ -10,19 +10,20 @@ if __name__ == "__main__":
     timer = time.time()
 
     pursuer = Rover(time_step = system_time_step,
-                    forward_speed = 120,
+                    forward_speed = 130,
                     pivot_threshold = 30,
                     tracker = system_tracker,
-                    my_id = 0,
-                    target_id = 2):)
+                    my_id = 2,
+                    comm = 'COM9',
+                    target_id = 0)
 
     while(True):
         try:
             # update system state
-            tracker.update()
+            system_tracker.update()
             pursuer.update_state()
 
-            if ((time.time() - timer) > time_step):
+            if ((time.time() - timer) > system_time_step):
                 # update actions
                 timer = time.time()
                 pursuer.update_action()
