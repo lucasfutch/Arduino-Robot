@@ -2,7 +2,7 @@ from controller import Controller
 from matlab_port import MatlabPort
 from navigator import Navigator
 
-class rover():
+class Rover():
     def __init__(time_step,
                  forward_speed,
                  pivot_threshold,
@@ -23,23 +23,26 @@ class rover():
         self.target_pos = [0, 0]
         self.desired_heading = 0
 
-    def update_state(self, target_pos=None):
+    def update_state(self, target_pos=None, desired_heading=None):
         # update my state parameters
         self.current_heading = self.tracker.get_heading(self.id)
         self.pos = self.tracker.get_pos(self.id)
 
         # update my target's state parmeters
-        if (self.target_id != None):
-            self.target_pos = self.tracker.get_pos(self.target_id)
-        else:
+        if (target_pos):
             self.target_pos = target_pos
+        elif (desired_heading):
+            self.desired_heading = desired_heading
+            self.target_pos = None
+        else:
+            self.target_pos = self.tracker.get_pos(self.target_id)
 
         if (self.pos and self.target_pos):
             self.desired_heading = self.navigator \
             .get_target_heading(self.pos, self.target_pos)
 
     def update_action(self):
-        if (self.pos and self.target_pos):
+        if (self.pos and self.target_heading):
             # there is enough information to act on
             self.controller.update_motors(self.current_heading,
                                           self.desired_heading)
