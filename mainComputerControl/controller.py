@@ -15,7 +15,7 @@ class Controller(object):
         self.max = 50
         self.forward_throttle_avg = forward_speed
         self.kp = (253.0/360.0)*5
-        self.ki = 0.5
+        self.ki = 0
         self.dt = dt
         self.xBee = XBee(comm_port)
         self.motor_input_pivot = 0
