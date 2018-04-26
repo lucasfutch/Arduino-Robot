@@ -56,10 +56,16 @@ class Rover():
                 self.desired_heading = None
 
     def update_action(self):
+
         if (self.pos and self.desired_heading):
             # there is enough information to act on
-            self.controller.update_motors(self.current_heading,
-                                          self.desired_heading)
+            if (self.target_pos and self.navigator.has_arrived()):
+                # we have arrived at our destination
+                self.controller.coast()
+            else:
+                # we are given a target heading
+                self.controller.update_motors(self.current_heading,
+                                              self.desired_heading)
         else:
             # no new data (fiducial is not in view)
             self.controller.coast()
