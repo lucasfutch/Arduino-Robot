@@ -4,21 +4,27 @@ from navigator import Navigator
 
 class Rover():
     def __init__(self,
-                 time_step,
-                 forward_speed,
-                 pivot_threshold,
                  tracker,
                  my_id,
-                 comm,
-                 target_id=None,
-                 reversed=False):
+                 target_id,
+                 time_step,
+                 max_pivot_input=50,
+                 forward_speed=70,
+                 pivot_threshold=30,
+                 proportional_gain=5,
+                 integrator_gain=0,
+                 reversed=False,
+                 comm_port='COM9'):
 
         # system work horses
         self.controller = Controller(time_step,
+                                     max_pivot_input,
                                      forward_speed,
                                      pivot_threshold,
-                                     comm_port=comm,
-                                     reversed=False)
+                                     proportional_gain,
+                                     integrator_gain,
+                                     reversed,
+                                     comm_port)
         self.navigator = Navigator()
         self.tracker = tracker
         self.id = my_id
