@@ -1,59 +1,32 @@
 import time
 
 from tracker import Tracker
-from controller import Controller
-from matlab_port import MatlabPort
-from navigator import Navigator
+from rover import Rover
 
 if __name__ == "__main__":
 
-    time_step = 0.0001
-
-    tracker = Tracker()
-    #matlab_port = MatlabPort()
-    pivot_threshold = 30
-    forward_speed = 120
-    navigator = Navigator()
-    controller = Controller(time_step, forward_speed, pivot_threshold)
-
-    target_heading = 0
-    my_pos = [0, 0]
-    target_pos = [0, 0]
-
-    motor_input = 3
+    system_time_step = 0.0001
+    system_tracker = Tracker()
     timer = time.time()
 
-    while(True):
+    # tricicle -- default conotroller is for this guy
+    pursuer = Rover(tracker=system_tracker,
+                    my_id=0,
+                    target_id=2,
+                    time_step=system_time_step,
+                    comm_port='COM5')
 
+    while(True):
         try:
             # update system state
-            tracker.update()
+            system_tracker.update()
+            pursuer.update_state()
 
-            
-            current_heading = tracker.get_my_heading()
-            my_pos = tracker.get_my_pos()
-            target_pos = tracker.get_target_pos()
-
-            if ((time.time() - timer) > time_step):
-            #if (False):
+            if ((time.time() - timer) > system_time_step):
+                # update actions
                 timer = time.time()
-                navigator.has_arrived()
-
-                if (my_pos and target_pos):
-                    target_heading = navigator.get_target_heading(my_pos, target_pos)
-                    pass
-
-                    # there is new data (fiducial is in view)
-                    port_info = int(current_heading*(255.0/360.0))
-                    #matlab_port.send_byte(port_info)
-
-                    controller.update_motors(current_heading, target_heading)
-
-                else:
-                    # no new data (fiducial is not in view)
-                    controller.coast()
+                pursuer.update_action()
 
         except (KeyboardInterrupt, SystemExit):
-            controller.stop()
-            #matlab_port.close()
+            pursuer.end()
             break
