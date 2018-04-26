@@ -1,7 +1,13 @@
 from xbee import XBee
 
 class Controller(object):
-    def __init__(self, dt, forward_speed, pivot_threshold, comm_port='COM9'):
+    def __init__(self,
+                 dt,
+                 forward_speed,
+                 pivot_threshold,
+                 comm_port='COM9',
+                 reversed=False):
+
         self.current_heading = None
         self.target_heading = None
         self.error = None
@@ -9,13 +15,14 @@ class Controller(object):
         self.max = 50
         self.forward_throttle_avg = forward_speed
         self.kp = (253.0/360.0)*5
-        self.ki = 0
+        self.ki = 0.5
         self.dt = dt
         self.xBee = XBee(comm_port)
         self.motor_input_pivot = 0
         self.motor_input_right = 0
         self.motor_input_left  = 0
         self.pivot_threshold = pivot_threshold
+        self.reversed = reversed
 
 
     def update_motors(self, current_heading, target_heading):
@@ -65,13 +72,16 @@ class Controller(object):
         self.motor_input_pivot = motor_input
 
     def get_motor_input_forward(self):
+        # if the controls are reversed, the error sign needs to be fliped
+        steering_error = self.error*-1 if reversed else self.error
+
         # veer left
-        if (self.error > 0):
+        if (steering_error > 0):
             self.motor_input_right = self.forward_throttle_avg + abs(self.error)*1.5
             self.motor_input_left = self.forward_throttle_avg - abs(self.error)*1.5
 
         # veer right
-        elif (self.error < 0):
+        elif (steering_error < 0):
             self.motor_input_right = self.forward_throttle_avg - abs(self.error)*1.5
             self.motor_input_left = self.forward_throttle_avg + abs(self.error)*1.5
 
@@ -92,9 +102,9 @@ class Controller(object):
     def command_motors_pivot(self):
         # determine direction
         if (self.motor_input_pivot >= 0):
-            self.xBee.send_command(1)
-        else:
             self.xBee.send_command(2)
+        else:
+            self.xBee.send_command(1)
 
         # send motor speed
         self.xBee.send_command(abs(self.motor_input_pivot))

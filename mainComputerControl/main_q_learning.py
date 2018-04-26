@@ -10,12 +10,13 @@ if __name__ == "__main__":
     timer = time.time()
 
     pursuer = Rover(time_step = system_time_step,
-                    forward_speed = 130,
+                    forward_speed = 100,
                     pivot_threshold = 30,
                     tracker = system_tracker,
                     my_id = 2,
                     comm = 'COM9',
-                    target_id = 0)
+                    target_id = 0
+                    reversed=False)
 
     while(True):
         try:

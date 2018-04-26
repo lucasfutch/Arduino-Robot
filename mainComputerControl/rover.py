@@ -10,10 +10,15 @@ class Rover():
                  tracker,
                  my_id,
                  comm,
-                 target_id=None):
+                 target_id=None,
+                 reversed=False):
 
         # system work horses
-        self.controller = Controller(time_step, forward_speed, pivot_threshold, comm_port=comm)
+        self.controller = Controller(time_step,
+                                     forward_speed,
+                                     pivot_threshold,
+                                     comm_port=comm,
+                                     reversed=False)
         self.navigator = Navigator()
         self.tracker = tracker
         self.id = my_id
