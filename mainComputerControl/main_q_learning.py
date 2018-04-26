@@ -15,7 +15,7 @@ if __name__ == "__main__":
                     tracker = system_tracker,
                     my_id = 2,
                     comm = 'COM9',
-                    target_id = 0
+                    target_id = 0,
                     reversed=False)
 
     while(True):
