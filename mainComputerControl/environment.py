@@ -20,6 +20,7 @@ class Environment():
                              my_id=self.pursuer_id,
                              target_id=self.evader_id,
                              time_step=self.system_time_step,
+                             reversed=True,
                              comm_port=usb_pursuer)
 
         self.evader = Rover(tracker=self.system_tracker,
@@ -27,13 +28,15 @@ class Environment():
                             target_id=None,
                             time_step=self.system_time_step,
                             max_pivot_input=100,
-                            forward_speed=100,
+                            forward_speed=130,
                             pivot_threshold=30,
                             proportional_gain=5,
                             integrator_gain=0,
-                            reversed=True,
+                            reversed=False,
                             comm_port=usb_evader)
 
+        self.setThresh(0.18)
+        
     def getSystemState(self, prev_state):
         self.system_tracker.update()
 
@@ -88,6 +91,11 @@ class Environment():
         return system_state
 
 
+    def setThresh(self, thresh):
+        self.pursuer.navigator.arrival_distance = thresh
+        self.evader.navigator.arrival_distance = thresh
+        
+    
     def reset(self, pursuer_target, evader_target):
         # generate a random starting position
         """
@@ -103,7 +111,7 @@ class Environment():
         print pursuer_target, evader_target
         self.pursuer.update_state(target_pos=pursuer_target)
         self.evader.update_state(target_pos=evader_target)
-
+        self.setThresh(0.05)
         # wait until they have arrived
         while ((not self.pursuer.navigator.has_arrived()) or
                (not self.evader.navigator.has_arrived())):
@@ -111,10 +119,10 @@ class Environment():
             # stop whoever has arrived
             if (self.pursuer.navigator.has_arrived()):
                 self.pursuer.coast()
-                print "Pursuer Arrived"
+                #print "Pursuer Arrived"
             if (self.evader.navigator.has_arrived()):
                 self.evader.coast()
-                print "Evader Arrived"
+                #print "Evader Arrived"
 
             # keep moving toward the targets
             self.system_tracker.update()
@@ -128,3 +136,4 @@ class Environment():
         for i in range(100):
             self.evader.coast()
             self.pursuer.coast()
+        self.setThresh(0.18)

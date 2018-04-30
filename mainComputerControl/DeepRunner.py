@@ -92,54 +92,49 @@ def getReward(next_state):
     return central_reward + distance_reward
 
 if __name__ == "__main__":
-    env = environment.Environment(0.04) # Our time step is slightly greater than the time it takes to send a single frame
+    env = environment.Environment(0.01, "/dev/ttyUSB0", "/dev/ttyUSB1") # Our time step is slightly greater than the time it takes to send a single frame
     state_size = 6 # 6 length array - ChaserX, ChaserY, RunnerX, RunnerY, CurrentRunnerHeading, CurrentChaserHeading
-    action_size = 4 # 4 actions - turn left, turn right, continue straight, do nothing
+    action_size = 360 # 4 actions - turn left, turn right, continue straight, do nothing
     agent = DQNAgent(state_size, action_size)
     done = False
-    batch_size = 32
+    batch_size = 10
     try:
-        env.reset()
+        env.reset([0.2, 0.2], [0.8, 0.8])
         for e in range(EPISODES):
             state = env.getSystemState([0, 0, 0, 1, 1, 360])
             state = np.reshape(state, [1, state_size])
-            for time in range(1000): # Max time of roughly 30 seconds
+            for time in range(3000): # Max time of roughly 30 seconds
                 action = agent.act(state)
                 array_state = state[0].tolist()
-                current_heading_in_360 = array_state[2]
-                if action != 3: # 3 action is do nothing
-                    if action != 2: # 2 is subtract from heading
-                        # Either go straight or right
-                        direct_action = (current_heading_in_360 + (20*action)) % 360
-                    else:
-                        # Go Left
-                        direct_action = (current_heading_in_360 - 20) % 360
-                else:
-                    # Do Nothing
-                    direct_action = None
-                next_state = env.step(array_state, target_heading=direct_action)
+                next_state = env.step(array_state, target_heading=action)
                 array_next_state = next_state.tolist()
                 done = False
-                if next_state[0] == next_state[3] and next_state[1] == next_state[4]:
+                if env.pursuer.navigator.has_arrived():
+                    print env.pursuer.pos, env.pursuer.target_pos
                     done = True
                 reward = getReward(next_state) if not done else -10
                 next_state = np.reshape(next_state, [1, state_size])
                 agent.remember(state, action, reward, next_state, done)
                 state = next_state
-                if done or time == 999:
+                if done or time == 2999:
                     agent.update_target_model()
-                    env.reset()
-                    state = env.getSystemState()
+                    env.reset([0.2, 0.2], [0.8, 0.8])
                     print("episode: {}/{}, Time Survived: {}, e: {:.2}"
                           .format(e, EPISODES, time, agent.epsilon))
                     break
             if len(agent.memory) > batch_size:
                 agent.replay(batch_size)
-                #agent.save("./running-agent-ddqn.h5")
+                agent.save("./running-agent-ddqn.h5")
     except (KeyboardInterrupt, SystemExit):
+        for i in range(100):
+            env.pursuer.stop()
+            env.evader.stop()
         env.pursuer.end()
         env.evader.end()
     except Exception as e:
+        for i in range(100):
+            env.pursuer.stop()
+            env.evader.stop()
         env.pursuer.end()
         env.evader.end()
         traceback.print_exc()

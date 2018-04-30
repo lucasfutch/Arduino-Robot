@@ -63,7 +63,7 @@ class Controller(object):
         if( (self.error) < -180):
             self.error = (360 + self.target_heading - self.current_heading )
 
-        print self.error
+        #print self.error
 
     def get_motor_input_pivot(self):
         # update integrator term
@@ -120,7 +120,7 @@ class Controller(object):
                 self.xBee.send_command(2)
 
         # send motor speed
-        print "Pivot Throttle: ", self.motor_input_pivot
+        #print "Pivot Throttle: ", self.motor_input_pivot
         self.xBee.send_command(abs(self.motor_input_pivot))
 
     def command_motors_forward(self):
