@@ -20,7 +20,8 @@ class Environment():
                              my_id=self.pursuer_id,
                              target_id=self.evader_id,
                              time_step=self.system_time_step,
-                             comm_port='COM5')
+                             reversed=True,
+                             comm_port='/dev/ttyUSB0')
 
         self.evader = Rover(tracker=self.system_tracker,
                             my_id=self.evader_id,
@@ -31,31 +32,40 @@ class Environment():
                             pivot_threshold=30,
                             proportional_gain=5,
                             integrator_gain=0,
-                            reversed=True,
-                            comm_port='COM9')
+                            comm_port='/dev/ttyUSB1')
 
-    def getSystemState(self):
+    def getSystemState(self, prev_state):
         self.system_tracker.update()
                 
         # return the system state
-        evader_x = self.system_tracker.get_pos(self.evader_id)[0]
-        evader_y = self.system_tracker.get_pos(self.evader_id)[1]
-        evader_heading = self.system_tracker.get_heading(self.evader_id)
-        pursuer_x = self.system_tracker.get_pos(self.pursuer_id)[0]
-        pursuer_y = self.system_tracker.get_pos(self.pursuer_id)[1]
-        pursuer_heading = self.system_tracker.get_heading(self.pursuer_id)
-
+        try:
+            evader_x = self.system_tracker.get_pos(self.evader_id)[0]
+            evader_y = self.system_tracker.get_pos(self.evader_id)[1]
+            evader_heading = self.system_tracker.get_heading(self.evader_id)
+        except:
+            evader_x = prev_state[0]
+            evader_y = prev_state[1]
+            evader_heading = prev_state[2]
+        try:
+            pursuer_x = self.system_tracker.get_pos(self.pursuer_id)[0]
+            pursuer_y = self.system_tracker.get_pos(self.pursuer_id)[1]
+            pursuer_heading = self.system_tracker.get_heading(self.pursuer_id)
+        except:
+            pursuer_x = prev_state[3]
+            pursuer_y = prev_state[4]
+            pursuer_heading = prev_state[5]
         # Round Positions to the Centimeter and directions to full degrees
-        system_state_array = np.array((np.round(evader_x, 2), np.round(evader_y, 2), np.round(evader_heading), np.round(pursuer_x, 2), np.round(pursuer_y), np.round(pursuer_heading)))
+        plain_state = (np.round(evader_x, 2), np.round(evader_y, 2), np.round(evader_heading), np.round(pursuer_x, 2), np.round(pursuer_y), np.round(pursuer_heading))
+        system_state_array = np.array(plain_state)
         return system_state_array
 
         
-    def step(self, target_heading=None, target_position=None):
+    def step(self, prev_state, target_heading=None, target_position=None):
         # update environmate state
         self.system_tracker.update()
 
         if ((target_heading==None) and (target_position == None)):
-            return None
+            pass
 
         # update system state
         elif (target_heading):
@@ -73,7 +83,9 @@ class Environment():
 
         # wait for there to be information to report and update
         time.sleep(self.system_time_step)
-        return getSystemState()
+        system_state = self.getSystemState(prev_state)
+
+        return system_state
         
         
     def reset(self):

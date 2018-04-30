@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
+import traceback
 import numpy as np
 from collections import deque
 from keras.models import Sequential
@@ -99,33 +100,48 @@ if __name__ == "__main__":
     batch_size = 32
 
     for e in range(EPISODES):
-        state = env.getSystemState()
-        state = np.reshape(state, [1, state_size])
-        for time in range(1000): # Max time of roughly 30 seconds
-            action = agent.act(state)
-            current_heading_in_360 = state[2] + 180
-            if action != 3: # 3 action is do nothing
-                if action != 2: # 2 is subtract from heading
-                    # Either go straight or right
-                    direct_action = (current_heading_in_360 + (5*action)) % 360
+        try:
+            state = env.getSystemState([0, 0, 0, 1, 1, 360])
+            state = np.reshape(state, [1, state_size])
+            for time in range(1000): # Max time of roughly 30 seconds
+                action = agent.act(state)
+                array_state = state[0].tolist()
+                current_heading_in_360 = array_state[2]
+                if action != 3: # 3 action is do nothing
+                    if action != 2: # 2 is subtract from heading
+                        # Either go straight or right
+                        direct_action = (current_heading_in_360 + (5*action)) % 360
+                    else:
+                        # Go Left
+                        direct_action = (current_heading_in_360 - 5) % 360
                 else:
-                    # Go Left
-                    direct_action = (current_heading_in_360 - 5) % 360
-            else:
-                # Do Nothing
-                direct_action = None
-            next_state = env.step(target_heading=direct_action)
-            done = bool(next_state[0] == next_state[3] and next_state[1] == next_state[4])
-            reward = getReward(next_state) if not done else -10
-            next_state = np.reshape(next_state, [1, state_size])
-            agent.remember(state, action, reward, next_state, done)
-            state = next_state
-            if done or time == 999:
-                env.reset()
-                agent.update_target_model()
-                print("episode: {}/{}, Time Survived: {}, e: {:.2}"
-                      .format(e, EPISODES, time, agent.epsilon))
-                break
-        if len(agent.memory) > batch_size:
-            agent.replay(batch_size)
-            #agent.save("./running-agent-ddqn.h5")
+                    # Do Nothing
+                    direct_action = None
+                next_state = env.step(array_state, target_heading=direct_action)
+                array_next_state = next_state.tolist()
+                done = False
+                if next_state[0] == next_state[3] and next_state[1] == next_state[4]:
+                    done = True
+                reward = getReward(next_state) if not done else -10
+                next_state = np.reshape(next_state, [1, state_size])
+                agent.remember(state, action, reward, next_state, done)
+                state = next_state
+                if done or time == 999:
+                    agent.update_target_model()
+                    env.reset()
+                    state = env.getSystemState()
+                    print("episode: {}/{}, Time Survived: {}, e: {:.2}"
+                          .format(e, EPISODES, time, agent.epsilon))
+                    break
+            if len(agent.memory) > batch_size:
+                agent.replay(batch_size)
+                #agent.save("./running-agent-ddqn.h5")
+        except (KeyboardInterrupt, SystemExit):
+            env.pursuer.end()
+            env.evader.end()
+            break
+        except Exception as e:
+            env.pursuer.end()
+            env.evader.end()
+            traceback.print_exc()
+            break

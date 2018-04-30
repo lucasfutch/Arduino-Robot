@@ -14,7 +14,8 @@ if __name__ == "__main__":
                     my_id=0,
                     target_id=2,
                     time_step=system_time_step,
-                    comm_port='COM5')
+                    reversed=True,
+                    comm_port='/dev/ttyUSB0')
 
     while(True):
         try:
