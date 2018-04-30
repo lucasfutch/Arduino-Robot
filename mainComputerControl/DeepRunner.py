@@ -98,9 +98,9 @@ if __name__ == "__main__":
     agent = DQNAgent(state_size, action_size)
     done = False
     batch_size = 32
-
-    for e in range(EPISODES):
-        try:
+    try:
+        env.reset()
+        for e in range(EPISODES):
             state = env.getSystemState([0, 0, 0, 1, 1, 360])
             state = np.reshape(state, [1, state_size])
             for time in range(1000): # Max time of roughly 30 seconds
@@ -110,10 +110,10 @@ if __name__ == "__main__":
                 if action != 3: # 3 action is do nothing
                     if action != 2: # 2 is subtract from heading
                         # Either go straight or right
-                        direct_action = (current_heading_in_360 + (5*action)) % 360
+                        direct_action = (current_heading_in_360 + (20*action)) % 360
                     else:
                         # Go Left
-                        direct_action = (current_heading_in_360 - 5) % 360
+                        direct_action = (current_heading_in_360 - 20) % 360
                 else:
                     # Do Nothing
                     direct_action = None
@@ -136,12 +136,10 @@ if __name__ == "__main__":
             if len(agent.memory) > batch_size:
                 agent.replay(batch_size)
                 #agent.save("./running-agent-ddqn.h5")
-        except (KeyboardInterrupt, SystemExit):
-            env.pursuer.end()
-            env.evader.end()
-            break
-        except Exception as e:
-            env.pursuer.end()
-            env.evader.end()
-            traceback.print_exc()
-            break
+    except (KeyboardInterrupt, SystemExit):
+        env.pursuer.end()
+        env.evader.end()
+    except Exception as e:
+        env.pursuer.end()
+        env.evader.end()
+        traceback.print_exc()
