@@ -32,6 +32,20 @@ class Environment():
                             reversed=True,
                             comm_port='COM9')
 
+    def getSystemState(self):
+        self.system_tracker.update()
+                
+        # return the system state
+        evader_x = self.system_tracker.get_pos(self.evader_id)[0]
+        evader_y = self.system_tracker.get_pos(self.evader_id)[1]
+        evader_heading = self.system_tracker.get_heading(self.evader_id)
+        pursuer_x = self.system_tracker.get_pos(self.pursuer_id)[0]
+        pursuer_y = self.system_tracker.get_pos(self.pursuer_id)[1]
+        pursuer_heading = self.system_tracker.get_heading(self.pursuer_id)
+
+        return (evader_x, evader_y, evader_heading, pursuer_x, pursuer_y, pursuer_heading)
+
+        
     def step(self, target_heading=None, target_position=None):
         # update environmate state
         self.system_tracker.update()
@@ -55,18 +69,9 @@ class Environment():
 
         # wait for there to be information to report and update
         time.sleep(self.system_time_step)
-        self.system_tracker.update()
-
-        # return the system state
-        evader_x = self.system_tracker.get_pos(self.evader_id)[0]
-        evader_y = self.system_tracker.get_pos(self.evader_id)[1]
-        evader_heading = self.system_tracker.get_heading(self.evader_id)
-        pursuer_x = self.system_tracker.get_pos(self.pursuer_id)[0]
-        pursuer_y = self.system_tracker.get_pos(self.pursuer_id)[1]
-        pursuer_heading = self.system_tracker.get_heading(self.pursuer_id)
-
-        return (evader_x, evader_y, evader_heading, pursuer_x, pursuer_y, pursuer_heading)
-
+        return getSystemState()
+        
+        
     def reset(self):
         # generate a random starting position
         pursuer_x = random.randrange(20, 800, 1)/1000.0

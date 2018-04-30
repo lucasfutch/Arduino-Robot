@@ -99,22 +99,23 @@ if __name__ == "__main__":
     batch_size = 32
 
     for e in range(EPISODES):
-        state = env.reset()
+        env.reset()
+        state = env.getSystemState()
         state = np.reshape(state, [1, state_size])
         for time in range(900): # Max time of roughly 30 seconds
-            direct_action = agent.act(state)
+            action = agent.act(state)
             current_heading_in_360 = state[2] + 180
-            if direct_action != 3: # 3 action is do nothing
-                if direct_action != 2: # 2 is subtract from heading
+            if action != 3: # 3 action is do nothing
+                if action != 2: # 2 is subtract from heading
                     # Either go straight or right
-                    action = (current_heading_in_360 + (5*direct_action)) % 360
+                    direct_action = (current_heading_in_360 + (5*action)) % 360
                 else:
                     # Go Left
-                    action = (current_heading_in_360 - 5) % 360
+                    direct_action = (current_heading_in_360 - 5) % 360
             else:
                 # Do Nothing
-                action = None
-            next_state = env.step(target_heading=action)
+                direct_action = None
+            next_state = env.step(target_heading=direct_action)
             done = bool(next_state[0] == next_state[3] and next_state[1] == next_state[4])
             reward = getReward(next_state) if not done else -10
             next_state = np.reshape(next_state, [1, state_size])
