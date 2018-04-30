@@ -43,5 +43,7 @@ class Navigator():
 
         if (self.my_pos and self.target_pos):
             if (self.distance_to_target < self.arrival_distance):
+                print "Arrived"
                 return True
+        print "Not Arrived"
         return False

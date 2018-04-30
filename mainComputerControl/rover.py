@@ -44,6 +44,11 @@ class Rover():
         # update my target's state parmeters
         if (target_pos):
             self.target_pos = target_pos
+            if (self.pos and self.target_pos):
+                self.desired_heading = self.navigator \
+                .get_target_heading(self.pos, self.target_pos)
+            else:
+                self.desired_heading = None
         elif (desired_heading):
             self.desired_heading = desired_heading
             self.target_pos = None
@@ -70,5 +75,11 @@ class Rover():
             # no new data (fiducial is not in view)
             self.controller.coast()
 
-    def end(self):
+    def stop(self):
         self.controller.stop()
+
+    def coast(self):
+        self.controller.coast()
+
+    def end(self):
+        self.controller.close()
