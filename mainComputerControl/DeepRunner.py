@@ -94,7 +94,7 @@ def getReward(next_state):
 if __name__ == "__main__":
     env = environment.Environment(0.01, "/dev/ttyUSB0", "/dev/ttyUSB1") # Our time step is slightly greater than the time it takes to send a single frame
     state_size = 6 # 6 length array - ChaserX, ChaserY, RunnerX, RunnerY, CurrentRunnerHeading, CurrentChaserHeading
-    action_size = 360 # 4 actions - turn left, turn right, continue straight, do nothing
+    action_size = 21 # 4 actions - turn left, turn right, continue straight, do nothing
     agent = DQNAgent(state_size, action_size)
     done = False
     batch_size = 10
@@ -106,7 +106,7 @@ if __name__ == "__main__":
             for time in range(3000): # Max time of roughly 30 seconds
                 action = agent.act(state)
                 array_state = state[0].tolist()
-                next_state = env.step(array_state, target_heading=action)
+                next_state = env.step(array_state, heading_correction=(action-11))
                 array_next_state = next_state.tolist()
                 done = False
                 if env.pursuer.navigator.has_arrived():
@@ -122,9 +122,9 @@ if __name__ == "__main__":
                     print("episode: {}/{}, Time Survived: {}, e: {:.2}"
                           .format(e, EPISODES, time, agent.epsilon))
                     break
-            if len(agent.memory) > batch_size:
-                agent.replay(batch_size)
-                agent.save("./running-agent-ddqn.h5")
+        if len(agent.memory) > batch_size:
+            agent.replay(batch_size)
+            agent.save("./running-agent-ddqn.h5")
     except (KeyboardInterrupt, SystemExit):
         for i in range(100):
             env.pursuer.stop()

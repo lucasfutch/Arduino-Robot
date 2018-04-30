@@ -63,11 +63,12 @@ class Environment():
         return system_state_array
 
 
-    def step(self, prev_state, target_heading=None, target_position=None):
+    def step(self, prev_state, target_heading=None, target_position=None, heading_correction=None):
         # update environmate state
         self.system_tracker.update()
 
-        if ((target_heading==None) and (target_position == None)):
+        print heading_correction
+        if ((target_heading==None) and (target_position == None) and (heading_correction == None)):
             pass
 
         # update system state
@@ -79,6 +80,11 @@ class Environment():
         elif(target_position):
             self.pursuer.update_state()
             self.evader.update_state(target_pos=target_position)
+
+        elif(heading_correction != None):
+            print 'hello'
+            self.pursuer.update_state()
+            self.evader.update_state(heading_correction=heading_correction)
 
         # update actions
         self.pursuer.update_action()
