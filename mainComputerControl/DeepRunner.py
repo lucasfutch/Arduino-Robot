@@ -99,10 +99,9 @@ if __name__ == "__main__":
     batch_size = 32
 
     for e in range(EPISODES):
-        env.reset()
         state = env.getSystemState()
         state = np.reshape(state, [1, state_size])
-        for time in range(900): # Max time of roughly 30 seconds
+        for time in range(1000): # Max time of roughly 30 seconds
             action = agent.act(state)
             current_heading_in_360 = state[2] + 180
             if action != 3: # 3 action is do nothing
@@ -121,9 +120,10 @@ if __name__ == "__main__":
             next_state = np.reshape(next_state, [1, state_size])
             agent.remember(state, action, reward, next_state, done)
             state = next_state
-            if done:
+            if done or time == 999:
+                env.reset()
                 agent.update_target_model()
-                print("episode: {}/{}, score: {}, e: {:.2}"
+                print("episode: {}/{}, Time Survived: {}, e: {:.2}"
                       .format(e, EPISODES, time, agent.epsilon))
                 break
         if len(agent.memory) > batch_size:
