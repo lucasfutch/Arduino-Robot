@@ -7,7 +7,7 @@ from tracker import Tracker
 import numpy as np
 
 class Environment():
-    def __init__(self, system_time_step):
+    def __init__(self, system_time_step, usb_pursuer, usb_evader):
         # system
         self.system_tracker = Tracker()
         self.timer = time.time()
@@ -20,8 +20,7 @@ class Environment():
                              my_id=self.pursuer_id,
                              target_id=self.evader_id,
                              time_step=self.system_time_step,
-                             reversed=True,
-                             comm_port='/dev/ttyUSB0')
+                             comm_port=usb_pursuer)
 
         self.evader = Rover(tracker=self.system_tracker,
                             my_id=self.evader_id,
@@ -32,11 +31,12 @@ class Environment():
                             pivot_threshold=30,
                             proportional_gain=5,
                             integrator_gain=0,
-                            comm_port='/dev/ttyUSB1')
+                            reversed=True,
+                            comm_port=usb_evader)
 
     def getSystemState(self, prev_state):
         self.system_tracker.update()
-                
+
         # return the system state
         try:
             evader_x = self.system_tracker.get_pos(self.evader_id)[0]
@@ -59,7 +59,7 @@ class Environment():
         system_state_array = np.array(plain_state)
         return system_state_array
 
-        
+
     def step(self, prev_state, target_heading=None, target_position=None):
         # update environmate state
         self.system_tracker.update()
@@ -86,10 +86,11 @@ class Environment():
         system_state = self.getSystemState(prev_state)
 
         return system_state
-        
-        
-    def reset(self):
+
+
+    def reset(self, pursuer_target, evader_target):
         # generate a random starting position
+        """
         pursuer_x = random.randrange(20, 800, 1)/1000.0
         pursuer_y = random.randrange(20, 800, 1)/1000.0
         evader_x = random.randrange(20, 800, 1)/1000.0
@@ -97,16 +98,33 @@ class Environment():
 
         pursuer_target = [pursuer_x, pursuer_y]
         evader_target = [evader_x, evader_y]
+        """
 
-        # tell robots to go to their reset locations
+        print pursuer_target, evader_target
         self.pursuer.update_state(target_pos=pursuer_target)
         self.evader.update_state(target_pos=evader_target)
 
         # wait until they have arrived
-        while ((not self.pursuer.navigator.has_arrived()) and
+        while ((not self.pursuer.navigator.has_arrived()) or
                (not self.evader.navigator.has_arrived())):
+
+            # stop whoever has arrived
+            if (self.pursuer.navigator.has_arrived()):
+                self.pursuer.coast()
+                print "Pursuer Arrived"
+            if (self.evader.navigator.has_arrived()):
+                self.evader.coast()
+                print "Evader Arrived"
+
             # keep moving toward the targets
             self.system_tracker.update()
+            # tell robots to go to their reset locations
+            self.pursuer.update_state(target_pos=pursuer_target)
+            self.evader.update_state(target_pos=evader_target)
             self.pursuer.update_action()
             self.evader.update_action()
             time.sleep(0.001)
+
+        for i in range(100):
+            self.evader.coast()
+            self.pursuer.coast()

@@ -11,11 +11,11 @@ if __name__ == "__main__":
 
     # tricicle -- default conotroller is for this guy
     pursuer = Rover(tracker=system_tracker,
-                    my_id=0,
-                    target_id=2,
+                    my_id=2,
+                    target_id=0,
                     time_step=system_time_step,
                     reversed=True,
-                    comm_port='/dev/ttyUSB0')
+                    comm_port='COM9')
 
     while(True):
         try:
