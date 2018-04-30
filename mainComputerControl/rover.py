@@ -36,12 +36,16 @@ class Rover():
         self.target_pos = [0, 0]
         self.desired_heading = 0
 
-    def update_state(self, target_pos=None, desired_heading=None):
+    def update_state(self,
+                     target_pos=None,
+                     desired_heading=None,
+                     heading_correction=None):
+
         # update my state parameters
         self.current_heading = self.tracker.get_heading(self.id)
         self.pos = self.tracker.get_pos(self.id)
 
-        # update my target's state parmeters
+        # update my target state parmeters
         if (target_pos):
             self.target_pos = target_pos
             if (self.pos and self.target_pos):
@@ -51,6 +55,10 @@ class Rover():
                 self.desired_heading = None
         elif (desired_heading):
             self.desired_heading = desired_heading
+            self.target_pos = None
+        elif (heading_correction):
+            new_heading = (self.desired_heading+heading_correction)%360
+            self.desired_heading = new_heading
             self.target_pos = None
         else:
             self.target_pos = self.tracker.get_pos(self.target_id)
