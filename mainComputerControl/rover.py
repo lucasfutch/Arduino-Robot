@@ -57,6 +57,15 @@ class Rover():
             self.desired_heading = desired_heading
             self.target_pos = None
         elif (heading_correction):
+            # make sure desired_heading is not None
+            if (self.desired_heading == None):
+                self.desired_heading = self.tracker.get_heading(self.id)
+                
+            # the tracker could still return None...
+            if (self.desired_heading == None):
+                return
+
+            # calculate the new heading!
             new_heading = (self.desired_heading+heading_correction)%360
             self.desired_heading = new_heading
             self.target_pos = None
