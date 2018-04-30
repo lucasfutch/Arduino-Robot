@@ -4,6 +4,8 @@ import random
 from rover import Rover
 from tracker import Tracker
 
+import numpy as np
+
 class Environment():
     def __init__(self, system_time_step):
         # system
@@ -43,7 +45,9 @@ class Environment():
         pursuer_y = self.system_tracker.get_pos(self.pursuer_id)[1]
         pursuer_heading = self.system_tracker.get_heading(self.pursuer_id)
 
-        return (evader_x, evader_y, evader_heading, pursuer_x, pursuer_y, pursuer_heading)
+        # Round Positions to the Centimeter and directions to full degrees
+        system_state_array = np.array((np.round(evader_x, 2), np.round(evader_y, 2), np.round(evader_heading), np.round(pursuer_x, 2), np.round(pursuer_y), np.round(pursuer_heading)))
+        return system_state_array
 
         
     def step(self, target_heading=None, target_position=None):
