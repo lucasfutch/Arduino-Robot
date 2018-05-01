@@ -82,14 +82,12 @@ def getReward(next_state):
     pos_runner = np.array(next_state[0:2])
     pos_center = np.array((0.5, 0.5))
     pos_chaser = np.array(next_state[3:5])
-    dist_from_center = np.linalg.norm(pos_center-pos_runner)
     dist_from_chaser = np.linalg.norm(pos_chaser-pos_runner)
     # Perform our pseudo-Couloumbs law
      # Avoid blowing up massive rewards with constant 1 in the denominator and shrink the function significantly in the X direction
-    central_reward = 2/(1+(dist_from_center*50)**2)
     # Again using distance squared, but inverting to reward greater distances rather than closer
     distance_reward = 10*dist_from_chaser**2
-    return central_reward + distance_reward
+    return (distance_reward)
 
 if __name__ == "__main__":
     env = environment.Environment(0.01, "/dev/ttyUSB0", "/dev/ttyUSB1") # Our time step is slightly greater than the time it takes to send a single frame
@@ -99,32 +97,36 @@ if __name__ == "__main__":
     done = False
     batch_size = 10
     try:
-        env.reset([0.2, 0.2], [0.8, 0.8])
+        env.reset([0.2, 0.2], [0.6, 0.6])
         for e in range(EPISODES):
             state = env.getSystemState([0, 0, 0, 1, 1, 360])
             state = np.reshape(state, [1, state_size])
+            reward = 0
             for time in range(3000): # Max time of roughly 30 seconds
                 action = agent.act(state)
                 array_state = state[0].tolist()
                 next_state = env.step(array_state, heading_correction=(action-11))
                 array_next_state = next_state.tolist()
                 done = False
-                if env.pursuer.navigator.has_arrived():
+                if env.pursuer.navigator.has_arrived() or array_state[0] >= 0.9 or array_state[1] >= 0.9 or array_state[0] <= 0.1 or array_state[1] <= 0.1:
                     print env.pursuer.pos, env.pursuer.target_pos
                     done = True
-                reward = getReward(next_state) if not done else -10
+                if done:
+                    reward += -10
+                else:
+                    reward += getReward(next_state)
                 next_state = np.reshape(next_state, [1, state_size])
                 agent.remember(state, action, reward, next_state, done)
                 state = next_state
                 if done or time == 2999:
                     agent.update_target_model()
-                    env.reset([0.2, 0.2], [0.8, 0.8])
+                    env.reset([0.2, 0.2], [0.6, 0.6])
                     print("episode: {}/{}, Time Survived: {}, e: {:.2}"
                           .format(e, EPISODES, time, agent.epsilon))
                     break
-        if len(agent.memory) > batch_size:
-            agent.replay(batch_size)
-            agent.save("./running-agent-ddqn.h5")
+            if len(agent.memory) > batch_size:
+                agent.replay(batch_size)
+                agent.save("./running-agent-ddqn.h5")
     except (KeyboardInterrupt, SystemExit):
         for i in range(100):
             env.pursuer.stop()

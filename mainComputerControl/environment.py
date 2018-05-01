@@ -19,6 +19,8 @@ class Environment():
         self.pursuer = Rover(tracker=self.system_tracker,
                              my_id=self.pursuer_id,
                              target_id=self.evader_id,
+                             forward_speed=100,
+                             proportional_gain=2.5,
                              time_step=self.system_time_step,
                              reversed=True,
                              comm_port=usb_pursuer)
@@ -67,7 +69,6 @@ class Environment():
         # update environmate state
         self.system_tracker.update()
 
-        print heading_correction
         if ((target_heading==None) and (target_position == None) and (heading_correction == None)):
             pass
 
@@ -82,7 +83,6 @@ class Environment():
             self.evader.update_state(target_pos=target_position)
 
         elif(heading_correction != None):
-            print 'hello'
             self.pursuer.update_state()
             self.evader.update_state(heading_correction=heading_correction)
 
@@ -122,23 +122,25 @@ class Environment():
         while ((not self.pursuer.navigator.has_arrived()) or
                (not self.evader.navigator.has_arrived())):
 
-            # stop whoever has arrived
-            if (self.pursuer.navigator.has_arrived()):
-                self.pursuer.coast()
-                #print "Pursuer Arrived"
-            if (self.evader.navigator.has_arrived()):
-                self.evader.coast()
-                #print "Evader Arrived"
-
             # keep moving toward the targets
             self.system_tracker.update()
-            # tell robots to go to their reset locations
-            self.pursuer.update_state(target_pos=pursuer_target)
-            self.evader.update_state(target_pos=evader_target)
-            self.pursuer.update_action()
-            self.evader.update_action()
-            time.sleep(0.001)
+            if self.timer >= self.system_time_step:
+                self.timer = time.time()
+                # tell robots to go to their reset locations
+                self.pursuer.update_state(target_pos=pursuer_target)
+                self.evader.update_state(target_pos=evader_target)
+                # stop whoever has arrived
+                if (self.pursuer.navigator.has_arrived()):
+                    self.pursuer.coast()
+                else:
+                    self.pursuer.update_action()
+                
+                if (self.evader.navigator.has_arrived()):
+                    self.evader.coast()
+                else:
+                    self.evader.update_action()
 
+                
         for i in range(100):
             self.evader.coast()
             self.pursuer.coast()
