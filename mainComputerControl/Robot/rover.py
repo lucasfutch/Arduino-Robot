@@ -60,7 +60,7 @@ class Rover():
             # make sure desired_heading is not None
             if (self.desired_heading == None):
                 self.desired_heading = self.tracker.get_heading(self.id)
-                
+
             # the tracker could still return None...
             if (self.desired_heading == None):
                 return

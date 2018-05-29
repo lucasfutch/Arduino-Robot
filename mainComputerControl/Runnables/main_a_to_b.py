@@ -1,9 +1,10 @@
 import time
 
-from tracker import Tracker
-from controller import Controller
-from matlab_port import MatlabPort
-from navigator import Navigator
+from ..robot.tracker import Tracker
+from ..robot.controller import Controller
+from ..robot.matlab_port import MatlabPort
+from ..robot.navigator import Navigator
+from ..robot.rover import Rover
 
 if __name__ == "__main__":
 
@@ -53,7 +54,7 @@ if __name__ == "__main__":
                 pursuer.update_action()
 
         except (KeyboardInterrupt, SystemExit):
-            controller.stop()
+            pursuer.stop()
             #matlab_port.close()
             break
 

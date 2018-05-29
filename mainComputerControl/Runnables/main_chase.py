@@ -1,7 +1,7 @@
 import time
 
-from tracker import Tracker
-from rover import Rover
+from ..robot.tracker import Tracker
+from ..robot.rover import Rover
 
 if __name__ == "__main__":
 

@@ -1,8 +1,8 @@
 import time
 import random
 
-from rover import Rover
-from tracker import Tracker
+from ..robot.rover import Rover
+from ..robot.tracker import Tracker
 
 import numpy as np
 
@@ -38,7 +38,7 @@ class Environment():
                             comm_port=usb_evader)
 
         self.setThresh(0.18)
-        
+
     def getSystemState(self, prev_state):
         self.system_tracker.update()
 
@@ -100,8 +100,8 @@ class Environment():
     def setThresh(self, thresh):
         self.pursuer.navigator.arrival_distance = thresh
         self.evader.navigator.arrival_distance = thresh
-        
-    
+
+
     def reset(self, pursuer_target, evader_target):
         # generate a random starting position
         """
@@ -134,13 +134,13 @@ class Environment():
                     self.pursuer.coast()
                 else:
                     self.pursuer.update_action()
-                
+
                 if (self.evader.navigator.has_arrived()):
                     self.evader.coast()
                 else:
                     self.evader.update_action()
 
-                
+
         for i in range(100):
             self.evader.coast()
             self.pursuer.coast()

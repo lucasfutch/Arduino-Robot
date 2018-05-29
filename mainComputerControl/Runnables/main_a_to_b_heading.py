@@ -1,9 +1,10 @@
 import time
 
-from tracker import Tracker
-from controller import Controller
-from matlab_port import MatlabPort
-from navigator import Navigator
+from ..robot.tracker import Tracker
+from ..robot.controller import Controller
+from ..robot.matlab_port import MatlabPort
+from ..robot.navigator import Navigator
+from ..robot.rover import Rover
 
 if __name__ == "__main__":
 
@@ -16,27 +17,27 @@ if __name__ == "__main__":
                 h = float(argv[5])
 
                 if (x > 0 and x < 1 and y > 0 and y < 1):
-                    target_pos = [x, y]
+                    target_position = [x, y]
                     if (h > 0 and h < 360):
                         final_heading = h
                     else:
                         final_heading = 0
                 else:
                     # Default
-                    target_pos = [0.5, 0.5]
+                    target_position = [0.5, 0.5]
                     final_heading = 0
             except ValueError:
                 # Default
-                target_pos = [0.5, 0.5]
+                target_position = [0.5, 0.5]
                 final_heading = 0
 
         else:
             # Default
-            target_pos = [0.5, 0.5]
+            target_position = [0.5, 0.5]
             final_heading = 0
     else:
         # Default
-        target_pos = [0.5, 0.5]
+        target_position = [0.5, 0.5]
         final_heading = 0
 
     system_time_step = 0.0001
@@ -55,7 +56,7 @@ if __name__ == "__main__":
         try:
             # update system state
             system_tracker.update()
-            pursuer.update_state(target_pos=target)
+            pursuer.update_state(target_pos=target_position)
 
             if ((time.time() - timer) > system_time_step):
                 # update actions
