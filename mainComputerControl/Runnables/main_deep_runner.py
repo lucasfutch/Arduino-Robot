@@ -9,7 +9,7 @@ from keras.optimizers import Adam
 from keras import backend as K
 
 # Custom Robotic Chaser RL environment
-from ..environments.physical_environment import Environment
+from ..environments.physical_environment import PhysicalEnvironment
 
 EPISODES = 5000
 
@@ -90,7 +90,7 @@ def getReward(next_state):
     return (distance_reward)
 
 if __name__ == "__main__":
-    env = Environment(0.01, "/dev/ttyUSB0", "/dev/ttyUSB1") # Our time step is slightly greater than the time it takes to send a single frame
+    env = PhysicalEnvironment(0.01, "/dev/ttyUSB0", "/dev/ttyUSB1") # Our time step is slightly greater than the time it takes to send a single frame
     state_size = 6 # 6 length array - ChaserX, ChaserY, RunnerX, RunnerY, CurrentRunnerHeading, CurrentChaserHeading
     action_size = 21 # 4 actions - turn left, turn right, continue straight, do nothing
     agent = DQNAgent(state_size, action_size)

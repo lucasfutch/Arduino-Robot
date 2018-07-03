@@ -6,7 +6,7 @@ from ..robot.tracker import Tracker
 
 import numpy as np
 
-class Environment():
+class PhysicalEnvironment():
     def __init__(self, system_time_step, usb_pursuer, usb_evader):
         # system
         self.system_tracker = Tracker()
