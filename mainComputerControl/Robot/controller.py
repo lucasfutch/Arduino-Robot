@@ -1,5 +1,3 @@
-from xbee import XBee
-
 class Controller(object):
     def __init__(self,
                  time_step,
@@ -30,7 +28,7 @@ class Controller(object):
         self.reversed = reversed
 
         # initilize comm module
-        self.xBee = XBee(comm_port)
+        self.xBee = comm_port
 
     def update_motors(self, current_heading, target_heading):
         # update state

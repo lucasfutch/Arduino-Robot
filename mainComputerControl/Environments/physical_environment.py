@@ -3,6 +3,8 @@ import random
 
 from ..robot.rover import Rover
 from ..robot.tracker import Tracker
+from ..robot.xbee import XBee
+
 
 import numpy as np
 
@@ -15,6 +17,10 @@ class PhysicalEnvironment():
         self.pursuer_id = 0
         self.evader_id = 2
 
+        # initiate comm modules
+        xbee_pursuer = XBee(usb_pursuer)
+        xbee_evader = XBee(usb_evader)
+
         # robots
         self.pursuer = Rover(tracker=self.system_tracker,
                              my_id=self.pursuer_id,
@@ -23,7 +29,7 @@ class PhysicalEnvironment():
                              proportional_gain=2.5,
                              time_step=self.system_time_step,
                              reversed=True,
-                             comm_port=usb_pursuer)
+                             comm_port=xbee_pursuer)
 
         self.evader = Rover(tracker=self.system_tracker,
                             my_id=self.evader_id,
@@ -35,7 +41,7 @@ class PhysicalEnvironment():
                             proportional_gain=5,
                             integrator_gain=0,
                             reversed=False,
-                            comm_port=usb_evader)
+                            comm_port=xbee_evader)
 
         self.setThresh(0.18)
 
