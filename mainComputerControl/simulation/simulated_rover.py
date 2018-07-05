@@ -1,4 +1,5 @@
 from ..robot.navigator import Navigator
+from rover_dynamics import RoverDynamics
 
 
 class SimulatedRover:
@@ -23,11 +24,8 @@ class SimulatedRover:
         self.integrator_gain = integrator_gain
         self.navigator = Navigator()
 
-        # State parameters
-        self.current_heading = starting_heading
-        self.pos = starting_position
-        self.target_pos = None
-        self.desired_heading = 0
+        # rover_dynamics class
+        dynamics = RoverDynamics(starting_position, starting_heading)
 
     def update_state(self,
                      target_pos=None,
