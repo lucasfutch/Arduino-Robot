@@ -23,26 +23,20 @@ class Navigator():
         else:
             theta_complimentary_deg = 90
 
-        print "theta compl: ", theta_complimentary_deg
-
         # determine what quadrant the target is in
         if (target_pos[0] > my_pos[0]):
             if (target_pos[1] < my_pos[1]):
                 # Quadrant 1
-                print "Q1"
                 self.target_heading = 90 - theta_complimentary_deg
             else:
                 # Quadrant 2
-                print "Q2"
                 self.target_heading = theta_complimentary_deg + 90
         else:
             if (target_pos[1] > my_pos[1]):
                 # Quadrant 3
-                print "Q3"
                 self.target_heading = 270 - theta_complimentary_deg
             else:
                 # Quadrant 4
-                print "Q4"
                 self.target_heading = 270 + theta_complimentary_deg
 
         print self.target_heading
