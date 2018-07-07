@@ -53,7 +53,7 @@ class RoverRender:
         self.rover_shape = RoverShape()
 
         # start screen
-        self.screen = pygame.display.set_mode((640,480))
+        self.screen = pygame.display.set_mode((1000,1000))
         self.screen.fill(white)
         self.render(self.position, self.heading)
 
