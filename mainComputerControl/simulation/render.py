@@ -12,7 +12,7 @@ pink = (255,200,200)
 
 class RoverShape:
     def __init__(self):
-        """
+        
         self.shape = [np.array([0,-15]),
                       np.array([-10,10]),
                       np.array([10,10]),
@@ -22,11 +22,6 @@ class RoverShape:
                        np.array([-1,-1]),
                        np.array([1,-1]),
                        np.array([0,1])]
-        """
-        self.shape = [np.array([0,5]),
-                      np.array([0,-5])]
-        self.points = [np.array([0,5]),
-                       np.array([0,-5])]
 
     def move(self, translation, rotation):
 
@@ -55,10 +50,12 @@ class RoverRender:
         # start screen
         self.screen = pygame.display.set_mode((1000,1000))
         self.screen.fill(white)
-        self.render(self.position, self.heading)
+        self.render()
 
-    def render(self, position, heading):
+    def draw(self, position, heading, color):
+        self.screen.fill(white)
         self.rover_shape.move(position, heading)
-        #self.screen.fill(white)
-        pygame.draw.lines(self.screen, black, False, self.rover_shape.get_tuple_points(), 1)
+        pygame.draw.lines(self.screen, color, False, self.rover_shape.get_tuple_points(), 1)
+
+    def render(self):
         pygame.display.update()
