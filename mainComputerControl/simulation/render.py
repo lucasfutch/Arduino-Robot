@@ -12,7 +12,7 @@ pink = (255,200,200)
 
 class RoverShape:
     def __init__(self):
-        
+
         self.shape = [np.array([0,-15]),
                       np.array([-10,10]),
                       np.array([10,10]),
@@ -42,9 +42,7 @@ class RoverShape:
         return tuple_list
 
 class RoverRender:
-    def __init__(self, starting_position, starting_heading):
-        self.position = starting_position
-        self.heading = starting_heading
+    def __init__(self):
         self.rover_shape = RoverShape()
 
         # start screen
@@ -52,8 +50,10 @@ class RoverRender:
         self.screen.fill(white)
         self.render()
 
-    def draw(self, position, heading, color):
+    def clear(self):
         self.screen.fill(white)
+
+    def draw(self, position, heading, color):
         self.rover_shape.move(position, heading)
         pygame.draw.lines(self.screen, color, False, self.rover_shape.get_tuple_points(), 1)
 
