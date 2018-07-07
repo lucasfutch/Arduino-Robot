@@ -56,7 +56,7 @@ class SimulatedRover:
 
         if (self.target):
             self.desired_heading = self.navigator \
-            .get_target_heading(self.pos, self.target.get_position())
+            .get_target_heading(self.pos, self.target.pos)
         elif (desired_heading):
             self.desired_heading = desired_heading
             self.target_pos = None
