@@ -39,7 +39,6 @@ class Navigator():
                 # Quadrant 4
                 self.target_heading = 270 + theta_complimentary_deg
 
-        print self.target_heading
         return self.target_heading
 
     def has_arrived(self):
@@ -52,11 +51,3 @@ class Navigator():
             if (self.distance_to_target < self.arrival_distance):
                 return True
         return False
-
-if __name__ == '__main__':
-    n = Navigator()
-    my_pos = [500, 500]
-    while True:
-        x = int(raw_input("X: "))
-        y = int(raw_input("Y: "))
-        n.get_target_heading(my_pos, [x, y])
