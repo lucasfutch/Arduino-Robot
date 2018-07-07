@@ -14,7 +14,7 @@ class Rover():
                  proportional_gain=5,
                  integrator_gain=0,
                  reversed=False,
-                 comm_port='COM9'):
+                 comm_port=None):
 
         # system work horses
         self.controller = Controller(time_step,

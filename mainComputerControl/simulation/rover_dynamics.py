@@ -67,7 +67,7 @@ class RoverDynamics:
     def update_state(self, left_motor_deg, right_motor_deg):
         # evaluate type of motion
         if (left_motor_deg == -1*right_motor_deg):
-            self.state_pivot(left_motor_deg, right_motor_deg)
+            self.pivot(left_motor_deg, right_motor_deg)
         elif (left_motor_deg == right_motor_deg):
             self.move_straight(left_motor_deg, right_motor_deg)
         else:
@@ -76,32 +76,8 @@ class RoverDynamics:
     def get_linear_dist(self, angle_deg):
         return self.wheel_diameter*angle_deg*np.pi/180.0
 
-    def get_new_heading(self):
+    def get_heading(self):
         return self.heading
 
-    def get_new_position(self):
+    def get_position(self):
         return self.position
-
-if __name__ == '__main__':
-    from render import RoverRender
-    # state variables
-    pos = [320, 240]
-    heading = 0
-    rover_rendering = RoverRender(pos, heading)
-    rover = RoverDynamics(wheel_diameter=5,
-                          wheel_separation=20,
-                          starting_position=pos,
-                          starting_heading=heading)
-
-    while True:
-        a = raw_input("Enter action: ")
-        if a == "w":
-            rover.update_state(30, 30)
-        elif a =="a":
-            rover.update_state(10, 20)
-        elif a =="d":
-            rover.update_state(20, 10)
-        elif a=="s":
-            rover.update_state(-10, -10)
-
-        rover_rendering.render(rover.get_new_position(), rover.get_new_heading())
