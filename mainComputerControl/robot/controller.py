@@ -61,8 +61,6 @@ class Controller(object):
         if( (self.error) < -180):
             self.error = (360 + self.target_heading - self.current_heading )
 
-        #print self.error
-
     def get_motor_input_pivot(self):
         # update integrator term
         self.update_integrator()
@@ -95,7 +93,7 @@ class Controller(object):
             self.motor_input_right = self.forward_throttle_avg
             self.motor_input_left = self.forward_throttle_avg
 
-        # make sure inputs are negative
+        # make sure inputs are not negative
         if (self.motor_input_right < 0):
             self.motor_input_right = 0
         if (self.motor_input_left < 0):
@@ -144,7 +142,7 @@ class Controller(object):
         else:
             self.motor_input_right -= 10
             self.motor_input_left -= 10
-            # make sure inputs are negative
+            # make sure inputs are not negative
             if (self.motor_input_right < 0):
                 self.motor_input_right = 0
             if (self.motor_input_left < 0):
