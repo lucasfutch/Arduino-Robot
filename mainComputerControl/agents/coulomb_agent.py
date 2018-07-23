@@ -7,6 +7,7 @@ class CoulombAgent(object):
         self.pursuer_pos = None
         self.env_length = env.arena_length
         self.env_width = env.arena_width
+        self.evasion_factor = 100
 
     def get_target_heading(self):
         # get relevant state parameters from environment
@@ -17,17 +18,20 @@ class CoulombAgent(object):
         f_right_wall = self.f_right_wall()
         f_top_wall = self.f_top_wall()
         f_bottom_wall = self.f_bottom_wall()
+        f_from_pursuer = self.f_from_pursuer()
 
 
         fx = f_left_wall[0] + \
              f_right_wall[0] + \
              f_top_wall[0] + \
-             f_bottom_wall[0]
+             f_bottom_wall[0] + \
+             f_from_pursuer[0]
 
         fy = f_left_wall[1] + \
              f_right_wall[1] + \
              f_top_wall[1] + \
-             f_bottom_wall[1]
+             f_bottom_wall[1] + \
+             f_from_pursuer[1]
 
         complementary_angle = np.arctan(abs(fy)/abs(fx))*(180.0/np.pi)
 
@@ -89,6 +93,16 @@ class CoulombAgent(object):
         end = -0.5*np.log((L*L)-(2*L*y)+(x*x)+(y*y))
 
         return end-start
+
+    def f_from_pursuer(self):
+        dx = np.float64(self.pos[0] - self.pursuer_pos[0])
+        dy = np.float64(self.pos[1] - self.pursuer_pos[1])
+        r_squared = np.float64((dx*dx) + (dy*dy))
+
+        fx = (self.evasion_factor*dx)/r_squared
+        fy = (self.evasion_factor*dy)/r_squared
+
+        return [fx, fy]
 
 if __name__ == '__main__':
     a = CoulombAgent(None)

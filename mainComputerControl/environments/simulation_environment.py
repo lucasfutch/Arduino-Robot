@@ -11,7 +11,7 @@ class SimulationEnvironment:
 
         self.evader = SimulatedRover(time_step=0.1,
                                      starting_heading=0,
-                                     starting_position=[980, 300],
+                                     starting_position=[100, 30],
                                      max_pivot_input=50,
                                      forward_speed=70,
                                      pivot_threshold=30,
