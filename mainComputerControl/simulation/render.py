@@ -42,11 +42,11 @@ class RoverShape:
         return tuple_list
 
 class RoverRender:
-    def __init__(self):
+    def __init__(self, arena_length, arena_width):
         self.rover_shape = RoverShape()
 
         # start screen
-        self.screen = pygame.display.set_mode((1000,1000))
+        self.screen = pygame.display.set_mode((arena_length,arena_width))
         self.screen.fill(white)
         self.render()
 
