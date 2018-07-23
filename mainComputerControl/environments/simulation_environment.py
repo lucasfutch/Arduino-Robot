@@ -3,17 +3,18 @@ from simulation.simulated_rover import SimulatedRover
 from simulation.render import RoverRender
 from agents.coulomb_agent import CoulombAgent
 
+
 class SimulationEnvironment:
     def __init__(self, render=True):
         self.render = render
-        self.arena_length = 1000
+        self.arena_height = 1000
         self.arena_width = 1000
 
         self.evader = SimulatedRover(time_step=0.1,
                                      starting_heading=0,
-                                     starting_position=[100, 30],
+                                     starting_position=[300, 980],
                                      max_pivot_input=50,
-                                     forward_speed=70,
+                                     forward_speed=100,
                                      pivot_threshold=30,
                                      proportional_gain=5,
                                      integrator_gain=0)
@@ -33,7 +34,7 @@ class SimulationEnvironment:
 
         if (render):
             from simulation.render import RoverRender
-            self.rover_rendering = RoverRender(self.arena_length, self.arena_width)
+            self.rover_rendering = RoverRender(self.arena_height, self.arena_width)
 
     def get_system_state(self):
         pass
@@ -62,6 +63,6 @@ if __name__ == '__main__':
 
     env = SimulationEnvironment()
 
-    for i in range(1000):
+    for i in range(10000):
         env.step()
         time.sleep(0.02)
