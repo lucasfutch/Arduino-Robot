@@ -12,7 +12,7 @@ class SimulationEnvironment:
 
         self.evader = SimulatedRover(time_step=0.1,
                                      starting_heading=0,
-                                     starting_position=[300, 980],
+                                     starting_position=[300, 500],
                                      max_pivot_input=50,
                                      forward_speed=100,
                                      pivot_threshold=30,
@@ -21,7 +21,7 @@ class SimulationEnvironment:
 
         self.pursuer = SimulatedRover(time_step=0.1,
                                       starting_heading=0,
-                                      starting_position=[20, 20],
+                                      starting_position=[700, 500],
                                       max_pivot_input=50,
                                       forward_speed=70,
                                       pivot_threshold=30,
