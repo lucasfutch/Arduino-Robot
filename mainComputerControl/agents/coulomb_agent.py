@@ -10,29 +10,8 @@ class CoulombAgent(object):
         self.evasion_factor = 5000
 
     def get_target_heading(self):
-        # get relevant state parameters from environment
-        self.pos[0] = self.env.evader.pos[0]
-        self.pos[1] = self.env_width - self.env.evader.pos[1]
-        self.pursuer_pos = self.env.pursuer.pos
 
-        f_left_wall = self.f_left_wall()
-        f_right_wall = self.f_right_wall()
-        f_top_wall = self.f_top_wall()
-        f_bottom_wall = self.f_bottom_wall()
-        f_from_pursuer = self.f_from_pursuer()
-
-        fx = f_left_wall[0] + \
-             f_top_wall[0]  + \
-             f_right_wall[0] + \
-             f_bottom_wall[0] + \
-             f_from_pursuer[0]
-
-        fy = f_left_wall[1] + \
-             f_top_wall[1]  + \
-             f_right_wall[1] + \
-             f_bottom_wall[1] + \
-             f_from_pursuer[1]
-
+        fx, fy = self.calculate_forces()
 
         complementary_angle = np.arctan(abs(fy)/abs(fx))*(180.0/np.pi)
 
@@ -57,6 +36,32 @@ class CoulombAgent(object):
             net_force =  270 + complementary_angle
 
         return net_force
+
+    def calculate_forces(self):
+        # get relevant state parameters from environment
+        self.pos[0] = self.env.evader.pos[0]
+        self.pos[1] = self.env_width - self.env.evader.pos[1]
+        self.pursuer_pos = self.env.pursuer.pos
+
+        f_left_wall = self.f_left_wall()
+        f_right_wall = self.f_right_wall()
+        f_top_wall = self.f_top_wall()
+        f_bottom_wall = self.f_bottom_wall()
+        f_from_pursuer = self.f_from_pursuer()
+
+        fx = f_left_wall[0] + \
+             f_top_wall[0]  + \
+             f_right_wall[0] + \
+             f_bottom_wall[0] + \
+             f_from_pursuer[0]
+
+        fy = f_left_wall[1] + \
+             f_top_wall[1]  + \
+             f_right_wall[1] + \
+             f_bottom_wall[1] + \
+             f_from_pursuer[1]
+
+        return fx, fy
 
     def f_left_wall(self):
         x = np.float64(self.pos[0])
