@@ -26,8 +26,9 @@ if __name__ == '__main__':
             evader_target = evader_agent.get_target_heading()
             env.step(evader_desired_heading=evader_target)
 
-            state = env.system_state()
+            state, done = env.system_state()
+            print state
 
-            if state[4] == True:
+            if done:
                 print "GAME OVER"
                 break
