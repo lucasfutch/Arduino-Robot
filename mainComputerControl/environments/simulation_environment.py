@@ -39,14 +39,21 @@ class SimulationEnvironment:
             self.rover_rendering = RoverRender(self.arena_height, self.arena_width)
 
     def system_state(self):
-        return (self.evader.pos,
+        return [self.evader.pos[0],
+                self.evader.pos[1],
                 self.evader.current_heading,
-                self.pursuer.pos,
-                self.pursuer.current_heading,
-                self.pursuer.navigator.has_arrived())
+                self.pursuer.pos[0],
+                self.pursuer.pos[1],
+                self.pursuer.current_heading], self.pursuer.navigator.has_arrived()
 
-    def step(self, evader_desired_heading):
-        self.evader.update_state(desired_heading=evader_desired_heading)
+    def step(self,
+             evader_target_pos=None,
+             evader_desired_heading=None,
+             evader_heading_correction=None):
+
+        self.evader.update_state(target_pos=evader_target_pos,
+                                 desired_heading=evader_desired_heading,
+                                 heading_correction=evader_heading_correction)
         self.pursuer.update_state()
 
         self.evader.update_action()
