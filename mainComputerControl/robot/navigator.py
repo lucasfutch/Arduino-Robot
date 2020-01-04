@@ -14,24 +14,30 @@ class Navigator():
         self.target_pos = target_pos
 
         # calculate complimentary angle
-        theta_complimentary_rad = np.arctan(abs(target_pos[0]-my_pos[0])/abs(target_pos[1]-my_pos[1]))
-        theta_complimentary_deg = theta_complimentary_rad*(180.0/np.pi)
+        dx = abs(target_pos[0]-my_pos[0])
+        dy = abs(target_pos[1]-my_pos[1])
+
+        if (dx != 0):
+            theta_complimentary_rad = np.arctan(dy/dx)
+            theta_complimentary_deg = theta_complimentary_rad*(180.0/np.pi)
+        else:
+            theta_complimentary_deg = 90
 
         # determine what quadrant the target is in
         if (target_pos[0] > my_pos[0]):
             if (target_pos[1] < my_pos[1]):
                 # Quadrant 1
-                self.target_heading = theta_complimentary_deg
+                self.target_heading = 90 - theta_complimentary_deg
             else:
                 # Quadrant 2
                 self.target_heading = theta_complimentary_deg + 90
         else:
-            if (target_pos[1] < my_pos[1]):
-                # Quadrant 4
-                self.target_heading = 360 - theta_complimentary_deg
-            else:
+            if (target_pos[1] > my_pos[1]):
                 # Quadrant 3
-                self.target_heading = theta_complimentary_deg + 180
+                self.target_heading = 270 - theta_complimentary_deg
+            else:
+                # Quadrant 4
+                self.target_heading = 270 + theta_complimentary_deg
 
         return self.target_heading
 

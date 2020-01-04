@@ -1,22 +1,34 @@
-from xbee import XBee
-
 class Controller(object):
-    def __init__(self, dt, forward_speed, pivot_threshold):
+    def __init__(self,
+                 time_step,
+                 max_pivot_input,
+                 forward_speed,
+                 pivot_threshold,
+                 proportional_gain,
+                 integrator_gain,
+                 reversed,
+                 comm_port):
+
+        # initialize state parameters
         self.current_heading = None
         self.target_heading = None
         self.error = None
-        self.integrator = 0
-        self.max = 50
-        self.forward_throttle_avg = forward_speed
-        self.kp = (253.0/360.0)*5
-        self.ki = 0
-        self.dt = dt
-        self.xBee = XBee()
         self.motor_input_pivot = 0
         self.motor_input_right = 0
         self.motor_input_left  = 0
-        self.pivot_threshold = pivot_threshold
+        self.integrator = 0
 
+        # Controller parameters
+        self.max = max_pivot_input
+        self.forward_throttle_avg = forward_speed
+        self.pivot_threshold = pivot_threshold
+        self.kp = (253.0/360.0)*proportional_gain
+        self.ki = integrator_gain
+        self.dt = time_step
+        self.reversed = reversed
+
+        # initilize comm module
+        self.xBee = comm_port
 
     def update_motors(self, current_heading, target_heading):
         # update state
@@ -49,8 +61,6 @@ class Controller(object):
         if( (self.error) < -180):
             self.error = (360 + self.target_heading - self.current_heading )
 
-        print self.error
-
     def get_motor_input_pivot(self):
         # update integrator term
         self.update_integrator()
@@ -65,13 +75,16 @@ class Controller(object):
         self.motor_input_pivot = motor_input
 
     def get_motor_input_forward(self):
+        # if the controls are reversed, the error sign needs to be fliped
+        steering_error = self.error*-1 if self.reversed else self.error
+
         # veer left
-        if (self.error > 0):
+        if (steering_error > 0):
             self.motor_input_right = self.forward_throttle_avg + abs(self.error)*1.5
             self.motor_input_left = self.forward_throttle_avg - abs(self.error)*1.5
 
         # veer right
-        elif (self.error < 0):
+        elif (steering_error < 0):
             self.motor_input_right = self.forward_throttle_avg - abs(self.error)*1.5
             self.motor_input_left = self.forward_throttle_avg + abs(self.error)*1.5
 
@@ -80,7 +93,7 @@ class Controller(object):
             self.motor_input_right = self.forward_throttle_avg
             self.motor_input_left = self.forward_throttle_avg
 
-        # make sure inputs are negative
+        # make sure inputs are not negative
         if (self.motor_input_right < 0):
             self.motor_input_right = 0
         if (self.motor_input_left < 0):
@@ -91,12 +104,19 @@ class Controller(object):
 
     def command_motors_pivot(self):
         # determine direction
-        if (self.motor_input_pivot >= 0):
-            self.xBee.send_command(1)
+        if (self.reversed):
+            if (self.motor_input_pivot >= 0):
+                self.xBee.send_command(2)
+            else:
+                self.xBee.send_command(1)
         else:
-            self.xBee.send_command(2)
+            if (self.motor_input_pivot >= 0):
+                self.xBee.send_command(1)
+            else:
+                self.xBee.send_command(2)
 
         # send motor speed
+        #print "Pivot Throttle: ", self.motor_input_pivot
         self.xBee.send_command(abs(self.motor_input_pivot))
 
     def command_motors_forward(self):
@@ -122,7 +142,7 @@ class Controller(object):
         else:
             self.motor_input_right -= 10
             self.motor_input_left -= 10
-            # make sure inputs are negative
+            # make sure inputs are not negative
             if (self.motor_input_right < 0):
                 self.motor_input_right = 0
             if (self.motor_input_left < 0):

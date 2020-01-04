@@ -24,6 +24,7 @@ class XBee(object):
             self.xbee_port.write(chr(int(strOut)))
         else:
             print "Trying to write the impossible!: ", strOut
+            self.xbee_port.write(chr(int(255)))
 
     def close(self):
         self.xbee_port.close()
